@@ -1,0 +1,1910 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assistant de référencement - Législation belge</title>
+<style>
+  :root {
+    --primary: #1a3558;
+    --secondary: #2c5282;
+    --accent: #c7a83a;
+    --bg: #f0f2f5;
+    --card: #ffffff;
+    --text: #1a202c;
+    --muted: #718096;
+    --border: #cbd5e0;
+    --success: #276749;
+    --radius: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Georgia', serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  header { background: var(--primary); color: white; padding: 1.5rem 2rem; border-bottom: 4px solid var(--accent); }
+  header h1 { font-size: 1.5rem; font-weight: bold; letter-spacing: 0.03em; }
+  header p { color: #a0b4cc; font-size: 0.875rem; margin-top: 0.25rem; font-style: italic; }
+  .container { max-width: 860px; margin: 2rem auto; padding: 0 1.5rem; }
+  .card { background: var(--card); border-radius: var(--radius); box-shadow: 0 1px 4px rgba(0,0,0,0.1); padding: 1.75rem; margin-bottom: 1.5rem; }
+  .card h2 { color: var(--primary); font-size: 1.05rem; font-weight: bold; margin-bottom: 1.25rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--accent); text-transform: uppercase; letter-spacing: 0.05em; }
+  label { display: block; font-size: 0.85rem; font-weight: bold; color: var(--secondary); margin-bottom: 0.3rem; margin-top: 0.9rem; }
+  label:first-of-type { margin-top: 0; }
+  select, input[type="text"], input[type="number"], input[type="url"] { width: 100%; padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.9rem; font-family: inherit; color: var(--text); background: white; transition: border-color 0.15s; }
+  select:focus, input:focus { outline: none; border-color: var(--secondary); box-shadow: 0 0 0 2px rgba(44,82,130,0.15); }
+  .date-group { display: flex; gap: 0.5rem; align-items: flex-start; }
+  .date-group .jour-input { width: 52px; flex-shrink: 0; }
+  .date-group .mois-select { flex: 1; min-width: 0; }
+  .date-group .annee-input { width: 88px; flex-shrink: 0; }
+  .hidden { display: none !important; }
+  .checkbox-label { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; font-weight: normal; color: var(--text); cursor: pointer; margin-top: 0.5rem; }
+  input[type="checkbox"] { width: auto; cursor: pointer; accent-color: var(--secondary); }
+  .optional-block { border: 1px dashed var(--border); border-radius: var(--radius); padding: 1rem; margin-top: 0.75rem; background: #f7f9fb; }
+  .optional-block label:first-of-type { margin-top: 0; }
+  .btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.6rem 1.4rem; border: none; border-radius: var(--radius); font-size: 0.9rem; font-family: inherit; cursor: pointer; transition: background 0.15s, transform 0.1s; }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary { background: var(--secondary); color: white; font-weight: bold; }
+  .btn-primary:hover { background: var(--primary); }
+  .btn-accent { background: var(--accent); color: var(--primary); font-weight: bold; }
+  .btn-accent:hover { background: #b8952e; }
+  .btn-outline { background: white; color: var(--secondary); border: 1px solid var(--secondary); }
+  .btn-outline:hover { background: var(--bg); }
+  .btn-group { display: flex; gap: 0.75rem; margin-top: 1.25rem; flex-wrap: wrap; }
+  #result-area { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; min-height: 60px; font-size: 1rem; line-height: 1.8; color: var(--text); }
+  #result-area em { font-style: italic; }
+  .result-label { font-size: 0.8rem; color: var(--muted); margin-bottom: 0.5rem; }
+  .copy-toast { display: inline-block; background: var(--success); color: white; padding: 0.3rem 0.8rem; border-radius: 4px; font-size: 0.8rem; margin-left: 0.5rem; opacity: 0; transition: opacity 0.3s; }
+  .copy-toast.show { opacity: 1; }
+  .hint { font-size: 0.78rem; color: var(--muted); font-style: italic; margin-top: 0.2rem; }
+  .section-sep { border: none; border-top: 1px solid var(--border); margin: 1.25rem 0; }
+  select optgroup { font-weight: bold; font-style: italic; }
+  /* Mode tabs */
+  .mode-tabs { display: flex; gap: 0; margin-bottom: 1.25rem; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
+  .mode-tab { flex: 1; padding: 0.65rem 1rem; text-align: center; cursor: pointer; font-size: 0.9rem; font-weight: bold; color: var(--muted); background: var(--bg); border: none; font-family: inherit; transition: background 0.15s, color 0.15s; }
+  .mode-tab.active { background: var(--secondary); color: white; }
+  .mode-tab:hover:not(.active) { background: #e2e8f0; }
+  @media (max-width: 600px) { .date-group { flex-wrap: wrap; } }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Assistant de référencement — Législation belge</h1>
+  <p>Outil d'aide à la rédaction des références — <em>Guide Wolters Kluwer des citations, références et abréviations juridiques</em> (éd. 2017)</p>
+</header>
+
+<div class="container">
+
+  <!-- Sélecteur de mode + type -->
+  <div class="card">
+    <h2>Type de source</h2>
+    <div class="mode-tabs">
+      <button class="mode-tab active" id="tab-normatif" onclick="setMode('normatif')">⚖ Actes normatifs</button>
+      <button class="mode-tab" id="tab-travprep" onclick="setMode('travprep')">📄 Travaux préparatoires</button>
+    </div>
+
+    <!-- Type : actes normatifs -->
+    <div id="type-normatif-wrap">
+      <label for="typeSelect">Type de norme</label>
+      <select id="typeSelect" onchange="updateFields()">
+        <option value="">— Choisir —</option>
+        <optgroup label="Normes fédérales">
+          <option value="constitution">Constitution</option>
+          <option value="code">Code</option>
+          <option value="loi">Loi ordinaire</option>
+          <option value="loi-speciale">Loi spéciale</option>
+          <option value="arrete-loi">Arrêté-loi</option>
+          <option value="arrete-royal">Arrêté royal</option>
+          <option value="am-federal">Arrêté ministériel (autorité fédérale)</option>
+          <option value="circulaire-mb">Circulaire publiée au M.B.</option>
+        </optgroup>
+        <optgroup label="Entités fédérées">
+          <option value="decret">Décret</option>
+          <option value="ordonnance">Ordonnance</option>
+          <option value="ag">Arrêté du gouvernement</option>
+          <option value="am-federe">Arrêté ministériel (entité fédérée)</option>
+        </optgroup>
+        <optgroup label="Normes locales">
+          <option value="acte-provincial">Acte provincial</option>
+          <option value="acte-communal">Acte communal</option>
+        </optgroup>
+        <optgroup label="Cas particuliers">
+          <option value="lois-coord">Lois / décrets / ordonnances coordonnés</option>
+          <option value="accord-coop">Accord de coopération</option>
+          <option value="cct">Convention collective de travail</option>
+          <option value="circulaire-web">Circulaire non publiée (site web)</option>
+        </optgroup>
+      </select>
+    </div>
+
+    <!-- Type : travaux préparatoires -->
+    <div id="type-travprep-wrap" class="hidden">
+      <label for="travSelect">Type de travail préparatoire</label>
+      <select id="travSelect" onchange="updateTravFields()">
+        <option value="">— Choisir —</option>
+        <optgroup label="Niveau fédéral">
+          <option value="doc-parl-fed">Documents parlementaires (Chambre ou Sénat)</option>
+          <option value="debats-fed">Débats — Ann. parl. / C.R.I. / C.R.A. (fédéral)</option>
+          <option value="rapport-roi">Rapport au Roi précédant un arrêté royal</option>
+        </optgroup>
+        <optgroup label="Entités fédérées">
+          <option value="doc-parl-fe">Documents parlementaires (entité fédérée)</option>
+          <option value="debats-fe">Débats — Ann. parl. / C.R.I. / C.R.A. (entité fédérée)</option>
+          <option value="rapport-gouv">Rapport au Gouvernement précédant un arrêté</option>
+        </optgroup>
+        <optgroup label="Questions parlementaires — toutes assemblées">
+          <option value="qr-question">Question parlementaire</option>
+          <option value="qr-reponse">Réponse à une question parlementaire</option>
+        </optgroup>
+      </select>
+    </div>
+  </div>
+
+  <!-- ===== CHAMPS ACTES NORMATIFS ===== -->
+  <div id="form-fields" class="hidden">
+
+    <!-- CONSTITUTION -->
+    <div id="fields-constitution" class="card hidden">
+      <h2>Constitution</h2>
+      <p class="hint">La Constitution se cite de façon abrégée. Indiquez uniquement les articles.</p>
+      <label>Articles cités</label>
+      <input type="text" id="const-arts" placeholder="ex. : 10 ou 10 et 11 ou 10 à 14">
+    </div>
+
+    <!-- CODE -->
+    <div id="fields-code" class="card hidden">
+      <h2>Code</h2>
+      <label>Code</label>
+      <select id="code-select" onchange="updateCodeFields()">
+        <option value="">— Choisir un code —</option>
+        <option value="C. civ.">C. civ. — Code civil</option>
+        <option value="C. pén.">C. pén. — Code pénal</option>
+        <option value="C. jud.">C. jud. — Code judiciaire</option>
+        <option value="C. com.">C. com. — Code de commerce</option>
+        <option value="C.I.R. 92">C.I.R. 92 — Code des impôts sur les revenus 1992</option>
+        <option value="C.T.V.A.">C.T.V.A. — Code de la taxe sur la valeur ajoutée</option>
+        <option value="CSA">CSA — Code des sociétés et des associations</option>
+        <option value="C. soc.">C. soc. — Code des sociétés (ancien)</option>
+        <option value="C. dr. écon.">C. dr. écon. — Code de droit économique</option>
+        <option value="C.D.L.D.">C.D.L.D. — Code de la démocratie locale et de la décentralisation</option>
+        <option value="CoDT">CoDT — Code du développement territorial (Wallonie)</option>
+        <option value="C. enr.">C. enr. — Code des droits d'enregistrement, d'hypothèque et de greffe</option>
+        <option value="C. succ.">C. succ. — Code des droits de succession</option>
+        <option value="C. dr. intern. priv.">C. dr. intern. priv. — Code de droit international privé</option>
+        <option value="C. pén. soc.">C. pén. soc. — Code pénal social</option>
+        <option value="C.R.A.">C.R.A. — Code du recouvrement amiable et forcé</option>
+        <option value="autre">— Autre code (sans abréviation officielle) —</option>
+      </select>
+      <div id="code-autre-block" class="hidden">
+        <label>Intitulé complet du code</label>
+        <input type="text" id="code-title" placeholder="ex. : Code wallon du Bien-être animal">
+      </div>
+      <label>Articles cités <span style="font-weight:normal;color:var(--muted)">(facultatif)</span></label>
+      <input type="text" id="code-arts" placeholder="ex. : 1er ou 5 et 17 ou 5, 7 et 10 ou 1er à 5">
+    </div>
+
+    <!-- LOI / LOI SPECIALE / ARRETE-LOI -->
+    <div id="fields-loi" class="card hidden">
+      <h2>Loi / Loi spéciale / Arrêté-loi</h2>
+      <div id="loi-nature-display" style="margin-bottom:0.75rem; font-weight:bold; color:var(--secondary);"></div>
+      <label>Date de promulgation</label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="loi-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="loi-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="loi-yyyy" placeholder="aaaa">
+      </div>
+      <label>Intitulé complet</label>
+      <input type="text" id="loi-title" placeholder="relative à...">
+      <label>Date de publication au <em>M.B.</em></label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="loi-pub-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="loi-pub-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="loi-pub-yyyy" placeholder="aaaa">
+      </div>
+    </div>
+
+    <!-- ARRETE ROYAL -->
+    <div id="fields-arrete-royal" class="card hidden">
+      <h2>Arrêté royal</h2>
+      <label>Numéro <span style="font-weight:normal;color:var(--muted)">(facultatif — uniquement si l'arrêté porte un numéro officiel)</span></label>
+      <input type="text" id="ar-num" placeholder="ex. : 38">
+      <label>Date de l'arrêté</label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="ar-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="ar-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="ar-yyyy" placeholder="aaaa">
+      </div>
+      <label>Intitulé</label>
+      <input type="text" id="ar-title" placeholder="relatif à...">
+      <label>Date de publication au <em>M.B.</em></label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="ar-pub-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="ar-pub-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="ar-pub-yyyy" placeholder="aaaa">
+      </div>
+    </div>
+
+    <!-- AM FEDERAL -->
+    <div id="fields-am-federal" class="card hidden">
+      <h2>Arrêté ministériel (autorité fédérale)</h2>
+      <label>Date de l'arrêté</label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="amf-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="amf-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="amf-yyyy" placeholder="aaaa">
+      </div>
+      <label>Intitulé</label>
+      <input type="text" id="amf-title" placeholder="relatif à...">
+      <label>Date de publication au <em>M.B.</em></label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="amf-pub-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="amf-pub-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="amf-pub-yyyy" placeholder="aaaa">
+      </div>
+    </div>
+
+    <!-- CIRCULAIRE MB -->
+    <div id="fields-circulaire-mb" class="card hidden">
+      <h2>Circulaire publiée au <em>M.B.</em></h2>
+      <label>Numéro <span style="font-weight:normal;color:var(--muted)">(facultatif)</span></label>
+      <input type="text" id="circ-num" placeholder="ex. : 34">
+      <label>Autorité émettrice</label>
+      <input type="text" id="circ-autorite" placeholder="ex. : Ministre de la Justice, SPF Finances">
+      <label>Date de la circulaire</label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="circ-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="circ-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="circ-yyyy" placeholder="aaaa">
+      </div>
+      <label>Intitulé / objet</label>
+      <input type="text" id="circ-title" placeholder="relative à...">
+      <label>Date de publication au <em>M.B.</em></label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="circ-pub-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="circ-pub-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="circ-pub-yyyy" placeholder="aaaa">
+      </div>
+      <label>Point ou article cité <span style="font-weight:normal;color:var(--muted)">(facultatif)</span></label>
+      <div style="display:flex;gap:0.5rem;align-items:center;">
+        <select id="circ-point-type" style="width:auto;">
+          <option value="">—</option>
+          <option value="point">Point</option>
+          <option value="art">Article</option>
+        </select>
+        <input type="text" id="circ-point-num" placeholder="ex. : 3" style="flex:1;">
+      </div>
+    </div>
+
+    <!-- DECRET -->
+    <div id="fields-decret" class="card hidden">
+      <h2>Décret</h2>
+      <label>Entité fédérée</label>
+      <select id="decret-entite">
+        <option value="">— Choisir —</option>
+        <option value="rw">Région wallonne</option>
+        <option value="vl">Autorité flamande</option>
+        <option value="cf">Communauté française</option>
+        <option value="cg">Communauté germanophone</option>
+        <option value="cocof">COCOF</option>
+        <option value="ccc">Commission communautaire commune (CCC)</option>
+      </select>
+      <label>Date de promulgation</label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="decret-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="decret-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="decret-yyyy" placeholder="aaaa">
+      </div>
+      <label>Intitulé</label>
+      <input type="text" id="decret-title" placeholder="relatif à...">
+      <label>Date de publication au <em>M.B.</em></label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="decret-pub-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="decret-pub-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="decret-pub-yyyy" placeholder="aaaa">
+      </div>
+    </div>
+
+    <!-- ORDONNANCE -->
+    <div id="fields-ordonnance" class="card hidden">
+      <h2>Ordonnance</h2>
+      <label>Autorité</label>
+      <select id="ord-entite">
+        <option value="">— Choisir —</option>
+        <option value="rbxl">Région de Bruxelles-Capitale</option>
+        <option value="ccc">Commission communautaire commune (CCC)</option>
+      </select>
+      <label>Date de promulgation</label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="ord-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="ord-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="ord-yyyy" placeholder="aaaa">
+      </div>
+      <label>Intitulé</label>
+      <input type="text" id="ord-title" placeholder="relative à...">
+      <label>Date de publication au <em>M.B.</em></label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="ord-pub-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="ord-pub-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="ord-pub-yyyy" placeholder="aaaa">
+      </div>
+    </div>
+
+    <!-- ARRETE DU GOUVERNEMENT -->
+    <div id="fields-ag" class="card hidden">
+      <h2>Arrêté du gouvernement</h2>
+      <label>Gouvernement</label>
+      <select id="ag-entite">
+        <option value="">— Choisir —</option>
+        <option value="gw">Gouvernement wallon</option>
+        <option value="gvl">Gouvernement flamand</option>
+        <option value="gcf">Gouvernement de la Communauté française</option>
+        <option value="gcg">Gouvernement de la Communauté germanophone</option>
+        <option value="gbxl">Gouvernement de la Région de Bruxelles-Capitale</option>
+        <option value="gccc">Collège réuni (CCC)</option>
+        <option value="gcocof">Collège de la COCOF</option>
+      </select>
+      <label>Date de l'arrêté</label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="ag-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="ag-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="ag-yyyy" placeholder="aaaa">
+      </div>
+      <label>Intitulé</label>
+      <input type="text" id="ag-title" placeholder="relatif à...">
+      <label>Date de publication au <em>M.B.</em></label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="ag-pub-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="ag-pub-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="ag-pub-yyyy" placeholder="aaaa">
+      </div>
+    </div>
+
+    <!-- AM FEDERE -->
+    <div id="fields-am-federe" class="card hidden">
+      <h2>Arrêté ministériel (entité fédérée)</h2>
+      <label>Entité fédérée</label>
+      <select id="amfe-entite">
+        <option value="">— Choisir —</option>
+        <option value="rw">Région wallonne</option>
+        <option value="vl">Autorité flamande</option>
+        <option value="cf">Communauté française</option>
+        <option value="cg">Communauté germanophone</option>
+        <option value="rbxl">Région de Bruxelles-Capitale</option>
+      </select>
+      <label>Date de l'arrêté</label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="amfe-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="amfe-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="amfe-yyyy" placeholder="aaaa">
+      </div>
+      <label>Intitulé</label>
+      <input type="text" id="amfe-title" placeholder="relatif à...">
+      <label>Date de publication au <em>M.B.</em></label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="amfe-pub-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="amfe-pub-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="amfe-pub-yyyy" placeholder="aaaa">
+      </div>
+    </div>
+
+    <!-- ACTE PROVINCIAL -->
+    <div id="fields-acte-provincial" class="card hidden">
+      <h2>Acte provincial</h2>
+      <label>Nature de l'acte</label>
+      <select id="prov-nature">
+        <option value="Règlement">Règlement</option>
+        <option value="Résolution">Résolution</option>
+        <option value="Décision">Décision</option>
+      </select>
+      <label>Organe</label>
+      <select id="prov-organe">
+        <option value="conseil">Conseil provincial</option>
+        <option value="college-w">Collège provincial (Wallonie)</option>
+        <option value="college-vl">Députation (Flandre)</option>
+        <option value="aucun">Aucun (ne pas mentionner l'organe)</option>
+      </select>
+      <label>Province</label>
+      <input type="text" id="prov-nom" placeholder="ex. : Hainaut, Liège, Flandre orientale">
+      <label>Date de l'acte</label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="prov-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="prov-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="prov-yyyy" placeholder="aaaa">
+      </div>
+      <label>Objet / intitulé</label>
+      <input type="text" id="prov-title" placeholder="relatif à...">
+      <label>Recueil officiel</label>
+      <select id="prov-recueil">
+        <option value="bull">Bulletin provincial (Bull. prov.)</option>
+        <option value="mem">Mémorial administratif (Mém. adm.)</option>
+      </select>
+      <label>Date de publication</label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="prov-pub-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="prov-pub-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="prov-pub-yyyy" placeholder="aaaa">
+      </div>
+    </div>
+
+    <!-- ACTE COMMUNAL -->
+    <div id="fields-acte-communal" class="card hidden">
+      <h2>Acte communal</h2>
+      <label>Nature de l'acte</label>
+      <select id="comm-nature">
+        <option value="Règlement">Règlement</option>
+        <option value="Ordonnance">Ordonnance</option>
+        <option value="Décision">Décision</option>
+      </select>
+      <label>Organe adoptant</label>
+      <select id="comm-organe">
+        <option value="conseil">Conseil communal</option>
+        <option value="college">Collège des bourgmestre et échevins</option>
+        <option value="college-ech">Collège échevinal</option>
+        <option value="aucun">Aucun (ne pas mentionner l'organe)</option>
+      </select>
+      <label>Commune</label>
+      <input type="text" id="comm-nom" placeholder="ex. : Mons, Gand, Liège">
+      <label>Date de l'acte</label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="comm-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="comm-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="comm-yyyy" placeholder="aaaa">
+      </div>
+      <label>Objet / intitulé</label>
+      <input type="text" id="comm-title" placeholder="relatif à...">
+      <label>URL <span style="font-weight:normal;color:var(--muted)">(facultatif)</span></label>
+      <input type="url" id="comm-url" placeholder="ex. : www.mons.be">
+      <label>Date de consultation <span style="font-weight:normal;color:var(--muted)">(si URL)</span></label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="comm-consult-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="comm-consult-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="comm-consult-yyyy" placeholder="aaaa">
+      </div>
+    </div>
+
+    <!-- LOIS COORD -->
+    <div id="fields-lois-coord" class="card hidden">
+      <h2>Lois / décrets / ordonnances coordonnés</h2>
+      <label>Nature</label>
+      <select id="coord-nature">
+        <option value="lois">Lois</option>
+        <option value="decrets">Décrets</option>
+        <option value="ordonnances">Ordonnances</option>
+      </select>
+      <label>Date de coordination</label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="coord-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="coord-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="coord-yyyy" placeholder="aaaa">
+      </div>
+      <label>Intitulé (matière coordonnée)</label>
+      <input type="text" id="coord-title" placeholder="ex. : sur les sociétés commerciales">
+      <label>Date de publication au <em>M.B.</em></label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="coord-pub-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="coord-pub-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="coord-pub-yyyy" placeholder="aaaa">
+      </div>
+    </div>
+
+    <!-- ACCORD DE COOPERATION -->
+    <div id="fields-accord-coop" class="card hidden">
+      <h2>Accord de coopération</h2>
+      <label>Date de l'accord</label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="acc-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="acc-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="acc-yyyy" placeholder="aaaa">
+      </div>
+      <label>Parties à l'accord <span style="font-weight:normal;color:var(--muted)">(facultatif)</span></label>
+      <input type="text" id="acc-parties" placeholder="ex. : entre la Région wallonne et l'Autorité flamande">
+      <label>Intitulé / objet</label>
+      <input type="text" id="acc-title" placeholder="relatif à...">
+      <label>Acte d'assentiment — Type de norme</label>
+      <select id="acc-ass-type">
+        <option value="loi">Loi</option>
+        <option value="loi-speciale">Loi spéciale</option>
+        <option value="decret">Décret</option>
+        <option value="ordonnance">Ordonnance</option>
+        <option value="arrete-loi">Arrêté-loi</option>
+      </select>
+      <label>Acte d'assentiment — Date</label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="acc-ass-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="acc-ass-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="acc-ass-yyyy" placeholder="aaaa">
+      </div>
+      <label>Acte d'assentiment — Publication au <em>M.B.</em></label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="acc-pub-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="acc-pub-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="acc-pub-yyyy" placeholder="aaaa">
+      </div>
+    </div>
+
+    <!-- CCT -->
+    <div id="fields-cct" class="card hidden">
+      <h2>Convention collective de travail</h2>
+      <label>Type</label>
+      <select id="cct-type" onchange="updateCCTFields()">
+        <option value="numerotee">CCT numérotée (conclue au sein du C.N.T.)</option>
+        <option value="sectorielle">CCT sectorielle ou d'entreprise</option>
+      </select>
+      <div id="cct-num-block">
+        <label>Numéro de la CCT</label>
+        <input type="text" id="cct-num" placeholder="ex. : 9">
+      </div>
+      <div id="cct-enceinte-block" class="hidden">
+        <label>Commission paritaire compétente</label>
+        <input type="text" id="cct-enceinte" placeholder="ex. : pour le commerce de détail indépendant">
+        <p class="hint">Indiquez la désignation après « Commission paritaire » (ex. : pour le commerce de détail indépendant, n° 201)</p>
+      </div>
+      <label>Date de conclusion</label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="cct-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="cct-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="cct-yyyy" placeholder="aaaa">
+      </div>
+      <label>Intitulé / objet</label>
+      <input type="text" id="cct-title" placeholder="concernant...">
+      <label class="checkbox-label">
+        <input type="checkbox" id="cct-ar"> Rendue obligatoire par arrêté royal ?
+      </label>
+      <div id="cct-ar-block" class="optional-block hidden">
+        <label>Date de l'arrêté royal de portée obligatoire</label>
+        <div class="date-group">
+          <input type="number" class="jour-input" id="cct-ar-dd" placeholder="j" min="1" max="31">
+          <select class="mois-select" id="cct-ar-mm"><option value="">— mois —</option></select>
+          <input type="number" class="annee-input" id="cct-ar-yyyy" placeholder="aaaa">
+        </div>
+        <label>Date de publication de l'A.R. au <em>M.B.</em></label>
+        <div class="date-group">
+          <input type="number" class="jour-input" id="cct-ar-pub-dd" placeholder="j" min="1" max="31">
+          <select class="mois-select" id="cct-ar-pub-mm"><option value="">— mois —</option></select>
+          <input type="number" class="annee-input" id="cct-ar-pub-yyyy" placeholder="aaaa">
+        </div>
+      </div>
+      <label>Articles cités <span style="font-weight:normal;color:var(--muted)">(facultatif)</span></label>
+      <input type="text" id="cct-arts" placeholder="ex. : 3 ou 3 et 5 ou 1er à 4">
+    </div>
+
+    <!-- CIRCULAIRE WEB -->
+    <div id="fields-circulaire-web" class="card hidden">
+      <h2>Circulaire non publiée au <em>M.B.</em></h2>
+      <label>Numéro <span style="font-weight:normal;color:var(--muted)">(facultatif)</span></label>
+      <input type="text" id="circw-num" placeholder="ex. : 12">
+      <label>Autorité émettrice</label>
+      <input type="text" id="circw-autorite" placeholder="ex. : SPF Justice, Procureur général">
+      <label>Date de la circulaire</label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="circw-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="circw-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="circw-yyyy" placeholder="aaaa">
+      </div>
+      <label>Intitulé / objet</label>
+      <input type="text" id="circw-title" placeholder="relative à...">
+      <label>Point ou article cité <span style="font-weight:normal;color:var(--muted)">(facultatif)</span></label>
+      <div style="display:flex;gap:0.5rem;align-items:center;">
+        <select id="circw-point-type" style="width:auto;">
+          <option value="">—</option>
+          <option value="point">Point</option>
+          <option value="art">Article</option>
+        </select>
+        <input type="text" id="circw-point-num" placeholder="ex. : 3" style="flex:1;">
+      </div>
+      <label>URL</label>
+      <input type="url" id="circw-url" placeholder="ex. : www.om-mp.be">
+      <label>Date de consultation</label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="circw-consult-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="circw-consult-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="circw-consult-yyyy" placeholder="aaaa">
+      </div>
+    </div>
+
+    <!-- OPTIONS TRANSVERSALES -->
+    <div id="options-transversales" class="card hidden">
+      <h2>Options supplémentaires</h2>
+
+      <div id="arts-block" class="hidden">
+        <label>Articles cités <span style="font-weight:normal;color:var(--muted)">(facultatif)</span></label>
+        <input type="text" id="arts-input" placeholder="ex. : 1er  ou  5 et 17  ou  5, 7 et 10  ou  1er à 5">
+        <p class="hint">La valeur sera insérée telle quelle après « art. »</p>
+        <hr style="border:none;border-top:1px solid var(--border);margin:1.25rem 0;">
+      </div>
+
+      <label class="checkbox-label">
+        <input type="checkbox" id="chk-err" onchange="toggleOptional('err-block')"> Erratum ?
+      </label>
+      <div id="err-block" class="optional-block hidden">
+        <label>Date de l'erratum au <em>M.B.</em></label>
+        <div class="date-group">
+          <input type="number" class="jour-input" id="err-dd" placeholder="j" min="1" max="31">
+          <select class="mois-select" id="err-mm"><option value="">— mois —</option></select>
+          <input type="number" class="annee-input" id="err-yyyy" placeholder="aaaa">
+        </div>
+      </div>
+
+      <label class="checkbox-label" style="margin-top:0.75rem;">
+        <input type="checkbox" id="chk-modif" onchange="toggleOptional('modif-block')"> Texte modifié ?
+      </label>
+      <div id="modif-block" class="optional-block hidden">
+        <label>Nature de l'acte modificatif</label>
+        <input type="text" id="modif-nature" placeholder="ex. : loi, arrêté royal, décret, ordonnance">
+        <p class="hint">Première lettre en minuscule — l'article (la, le, l') sera ajouté automatiquement.</p>
+        <label>Date de l'acte modificatif</label>
+        <div class="date-group">
+          <input type="number" class="jour-input" id="modif-dd" placeholder="j" min="1" max="31">
+          <select class="mois-select" id="modif-mm"><option value="">— mois —</option></select>
+          <input type="number" class="annee-input" id="modif-yyyy" placeholder="aaaa">
+        </div>
+        <label>Date de publication au <em>M.B.</em></label>
+        <div class="date-group">
+          <input type="number" class="jour-input" id="modif-pub-dd" placeholder="j" min="1" max="31">
+          <select class="mois-select" id="modif-pub-mm"><option value="">— mois —</option></select>
+          <input type="number" class="annee-input" id="modif-pub-yyyy" placeholder="aaaa">
+        </div>
+      </div>
+
+      <div id="cc-option-row">
+      <label class="checkbox-label" style="margin-top:0.75rem;">
+        <input type="checkbox" id="chk-cc" onchange="toggleOptional('cc-block')"> Annulé(e) par la Cour constitutionnelle ?
+      </label>
+      </div>
+      <div id="cc-block" class="optional-block hidden">
+        <label>Date de l'arrêt</label>
+        <div class="date-group">
+          <input type="number" class="jour-input" id="cc-dd" placeholder="j" min="1" max="31">
+          <select class="mois-select" id="cc-mm"><option value="">— mois —</option></select>
+          <input type="number" class="annee-input" id="cc-yyyy" placeholder="aaaa">
+        </div>
+        <label>Numéro de l'arrêt</label>
+        <input type="text" id="cc-num" placeholder="ex. : 42/2023">
+      </div>
+    </div>
+
+  </div><!-- /form-fields -->
+
+  <!-- ===== CHAMPS TRAVAUX PREPARATOIRES ===== -->
+  <div id="trav-fields" class="hidden">
+
+    <!-- DOC PARL FEDERAL -->
+    <div id="fields-doc-parl-fed" class="card hidden">
+      <h2>Documents parlementaires (fédéral)</h2>
+      <label>Assemblée</label>
+      <select id="dpf-assemblee">
+        <option value="Ch.">Chambre des représentants</option>
+        <option value="Sén.">Sénat</option>
+      </select>
+      <label>Session législative <span style="font-weight:normal;color:var(--muted)">(ex. : 2019-2020)</span></label>
+      <input type="text" id="dpf-session" placeholder="ex. : 2019-2020">
+      <label>Numéro du document <span style="font-weight:normal;color:var(--muted)">(ex. : 1234/1)</span></label>
+      <input type="text" id="dpf-num" placeholder="ex. : 1234/1">
+      <label>Nature de l'acte</label>
+      <input type="text" id="dpf-nature" placeholder="ex. : projet de loi">
+      <label>Intitulé officiel</label>
+      <input type="text" id="dpf-intitule" placeholder="ex. : relatif à l'organisation des soins de santé">
+      <label>Partie précise du document <span style="font-weight:normal;color:var(--muted)">(facultatif)</span></label>
+      <input type="text" id="dpf-partie" placeholder="ex. : avis du Conseil d'État">
+      <label>Pages <span style="font-weight:normal;color:var(--muted)">(facultatif)</span></label>
+      <input type="text" id="dpf-pages" placeholder="ex. : 12 ou 12-15">
+    </div>
+
+    <!-- ANN PARL FEDERAL -->
+    <div id="fields-debats-fed" class="card hidden">
+      <h2>Débats parlementaires (fédéral)</h2>
+      <p class="hint">Couvre les Annales parlementaires (<em>Ann. parl.</em>), le Compte rendu intégral (<em>C.R.I.</em>) et le Compte rendu analytique (<em>C.R.A.</em>).</p>
+      <label>Nature de l'acte</label>
+      <input type="text" id="dbf-nature" placeholder="ex. : Projet de loi, Proposition de résolution">
+      <label>Intitulé officiel</label>
+      <input type="text" id="dbf-intitule" placeholder="ex. : modifiant la loi du 8 juillet 1976…">
+      <label>Partie précise</label>
+      <input type="text" id="dbf-partie" placeholder="ex. : discussion générale, examen des articles">
+      <label>Recueil</label>
+      <select id="dbf-recueil">
+        <option value="Ann. parl.">Annales parlementaires (Ann. parl.)</option>
+        <option value="C.R.I.">Compte rendu intégral (C.R.I.)</option>
+        <option value="C.R.A.">Compte rendu analytique (C.R.A.)</option>
+      </select>
+      <label>Assemblée</label>
+      <select id="dbf-assemblee">
+        <option value="Ch.">Chambre des représentants</option>
+        <option value="Sén.">Sénat</option>
+      </select>
+      <label>Session <span style="font-weight:normal;color:var(--muted)">(ex. : 2012-2013)</span></label>
+      <input type="text" id="dbf-session" placeholder="ex. : 2012-2013">
+      <label>Date de la séance</label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="dbf-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="dbf-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="dbf-yyyy" placeholder="aaaa">
+      </div>
+      <label>Numéro du document</label>
+      <input type="text" id="dbf-num" placeholder="ex. : 16">
+      <label>Pages</label>
+      <input type="text" id="dbf-pages" placeholder="ex. : 29">
+    </div>
+
+    <!-- QUESTION PARLEMENTAIRE -->
+    <div id="fields-qr-question" class="card hidden">
+      <h2>Question parlementaire</h2>
+      <label>Nature de l'intervention</label>
+      <select id="qrq-nature">
+        <option value="question">Question</option>
+        <option value="interpellation">Interpellation</option>
+        <option value="demande">Demande d'explications</option>
+      </select>
+      <label>Numéro <span style="font-weight:normal;color:var(--muted)">(facultatif)</span></label>
+      <input type="text" id="qrq-num" placeholder="ex. : 116">
+      <label>Auteur <span style="font-weight:normal;color:var(--muted)">(initiale prénom + nom)</span></label>
+      <input type="text" id="qrq-auteur" placeholder="ex. : A. Mertes">
+      <label>Date de la question <span style="font-weight:normal;color:var(--muted)">(si question écrite)</span></label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="qrq-date-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="qrq-date-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="qrq-date-yyyy" placeholder="aaaa">
+      </div>
+      <label>Recueil</label>
+      <select id="qrq-recueil" onchange="toggleQRQAutre()">
+        <option value="Q.R.">Q.R. (Questions et réponses)</option>
+        <option value="C.R.I.">C.R.I. (Compte rendu intégral)</option>
+        <option value="I.F.">I.F. (Informationen und Fragen)</option>
+        <option value="autre">Autre (préciser)</option>
+      </select>
+      <div id="qrq-recueil-autre-block" class="hidden">
+        <label>Intitulé abrégé du recueil</label>
+        <input type="text" id="qrq-recueil-autre" placeholder="ex. : B.Q.R.W.">
+      </div>
+      <label>Assemblée</label>
+      <select id="qrq-assemblee">
+        <optgroup label="Niveau fédéral">
+          <option value="Ch.">Chambre des représentants</option>
+          <option value="Sén.">Sénat</option>
+        </optgroup>
+        <optgroup label="Entités fédérées">
+          <option value="Parl. w.">Parlement wallon</option>
+          <option value="Vl. Parl.">Parlement flamand (Vl. Parl.)</option>
+          <option value="Parl. comm. fr.">Parlement de la Communauté française</option>
+          <option value="Parl. D. Gem.">Parlement de la Communauté germanophone</option>
+          <option value="Parl. Rég. Brux.-Cap.">Parlement de la Région de Bruxelles-Capitale</option>
+          <option value="COCOF">COCOF</option>
+          <option value="Ass. réun. C.C.C.">Commission communautaire commune (C.C.C.)</option>
+        </optgroup>
+      </select>
+      <label>Session <span style="font-weight:normal;color:var(--muted)">(ex. : 2015-2016)</span></label>
+      <input type="text" id="qrq-session" placeholder="ex. : 2015-2016">
+      <label>Date de la séance <span style="font-weight:normal;color:var(--muted)">(si question orale)</span></label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="qrq-seance-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="qrq-seance-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="qrq-seance-yyyy" placeholder="aaaa">
+      </div>
+      <label>Numéro du document</label>
+      <input type="text" id="qrq-docnum" placeholder="ex. : 21 ou n°63-COM">
+      <label>Pages</label>
+      <input type="text" id="qrq-pages" placeholder="ex. : 162">
+    </div>
+
+    <!-- REPONSE PARLEMENTAIRE -->
+    <div id="fields-qr-reponse" class="card hidden">
+      <h2>Réponse à une question parlementaire</h2>
+      <label>Date de la réponse <span style="font-weight:normal;color:var(--muted)">(si question écrite)</span></label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="qrr-date-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="qrr-date-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="qrr-date-yyyy" placeholder="aaaa">
+      </div>
+      <label>Nature de la question</label>
+      <select id="qrr-nature">
+        <option value="question">Question</option>
+        <option value="interpellation">Interpellation</option>
+        <option value="demande">Demande d'explications</option>
+      </select>
+      <label>Numéro de la question <span style="font-weight:normal;color:var(--muted)">(facultatif)</span></label>
+      <input type="text" id="qrr-num" placeholder="ex. : 67">
+      <label>Auteur de la question <span style="font-weight:normal;color:var(--muted)">(initiale prénom + nom)</span></label>
+      <input type="text" id="qrr-auteur" placeholder="ex. : B. Debaets">
+      <label>Recueil</label>
+      <select id="qrr-recueil" onchange="toggleQRRAutre()">
+        <option value="Q.R.">Q.R. (Questions et réponses)</option>
+        <option value="C.R.I.">C.R.I. (Compte rendu intégral)</option>
+        <option value="I.F.">I.F. (Informationen und Fragen)</option>
+        <option value="autre">Autre (préciser)</option>
+      </select>
+      <div id="qrr-recueil-autre-block" class="hidden">
+        <label>Intitulé abrégé du recueil</label>
+        <input type="text" id="qrr-recueil-autre" placeholder="ex. : B.Q.R.W.">
+      </div>
+      <label>Assemblée</label>
+      <select id="qrr-assemblee">
+        <optgroup label="Niveau fédéral">
+          <option value="Ch.">Chambre des représentants</option>
+          <option value="Sén.">Sénat</option>
+        </optgroup>
+        <optgroup label="Entités fédérées">
+          <option value="Parl. w.">Parlement wallon</option>
+          <option value="Vl. Parl.">Parlement flamand (Vl. Parl.)</option>
+          <option value="Parl. comm. fr.">Parlement de la Communauté française</option>
+          <option value="Parl. D. Gem.">Parlement de la Communauté germanophone</option>
+          <option value="Parl. Rég. Brux.-Cap.">Parlement de la Région de Bruxelles-Capitale</option>
+          <option value="COCOF">COCOF</option>
+          <option value="Ass. réun. C.C.C.">Commission communautaire commune (C.C.C.)</option>
+        </optgroup>
+      </select>
+      <label>Session <span style="font-weight:normal;color:var(--muted)">(ex. : 2011-2012)</span></label>
+      <input type="text" id="qrr-session" placeholder="ex. : 2011-2012">
+      <label>Date de la séance <span style="font-weight:normal;color:var(--muted)">(si question orale)</span></label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="qrr-seance-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="qrr-seance-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="qrr-seance-yyyy" placeholder="aaaa">
+      </div>
+      <label>Numéro du document</label>
+      <input type="text" id="qrr-docnum" placeholder="ex. : 6">
+      <label>Pages</label>
+      <input type="text" id="qrr-pages" placeholder="ex. : 11">
+    </div>
+
+    <!-- RAPPORT AU ROI -->
+    <div id="fields-rapport-roi" class="card hidden">
+      <h2>Rapport au Roi précédant un arrêté royal</h2>
+      <p class="hint">Le Rapport au Roi est cité en lien avec l'arrêté royal qu'il précède.</p>
+      <label>Intitulé de l'arrêté royal</label>
+      <input type="text" id="rr-intitule" placeholder="ex. : relatif à l'organisation des soins de santé">
+      <label>Date de l'arrêté royal</label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="rr-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="rr-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="rr-yyyy" placeholder="aaaa">
+      </div>
+      <label>Date de publication au <em>M.B.</em></label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="rr-pub-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="rr-pub-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="rr-pub-yyyy" placeholder="aaaa">
+      </div>
+      <label>Page(s) du <em>M.B.</em></label>
+      <input type="text" id="rr-page" placeholder="ex. : 12345">
+    </div>
+
+    <!-- DOC PARL ENTITE FEDEREE -->
+    <div id="fields-doc-parl-fe" class="card hidden">
+      <h2>Documents parlementaires (entité fédérée)</h2>
+      <label>Parlement</label>
+      <select id="dpfe-parl">
+        <option value="Parl. w.">Parlement wallon</option>
+        <option value="Vl. Parl.">Parlement flamand (Vl. Parl.)</option>
+        <option value="Parl. comm. fr.">Parlement de la Communauté française</option>
+        <option value="Parl. D. Gem.">Parlement de la Communauté germanophone</option>
+        <option value="Parl. Rég. Brux.-Cap.">Parlement de la Région de Bruxelles-Capitale</option>
+        <option value="COCOF">COCOF</option>
+        <option value="Ass. réun. C.C.C.">Commission communautaire commune (C.C.C.)</option>
+      </select>
+      <label>Session <span style="font-weight:normal;color:var(--muted)">(ex. : 2021-2022)</span></label>
+      <input type="text" id="dpfe-session" placeholder="ex. : 2021-2022">
+      <label>Numéro du document</label>
+      <input type="text" id="dpfe-num" placeholder="ex. : 456/1">
+      <label>Nature de l'acte</label>
+      <input type="text" id="dpfe-nature" placeholder="ex. : projet de décret">
+      <label>Intitulé officiel</label>
+      <input type="text" id="dpfe-intitule" placeholder="ex. : relatif à l'aménagement du territoire">
+      <label>Partie précise du document <span style="font-weight:normal;color:var(--muted)">(facultatif)</span></label>
+      <input type="text" id="dpfe-partie" placeholder="ex. : avis du Conseil d'État">
+      <label>Pages <span style="font-weight:normal;color:var(--muted)">(facultatif)</span></label>
+      <input type="text" id="dpfe-pages" placeholder="ex. : 8-12">
+    </div>
+
+    <!-- DEBATS PARLEMENTAIRES ENTITE FEDEREE -->
+    <div id="fields-debats-fe" class="card hidden">
+      <h2>Débats parlementaires (entité fédérée)</h2>
+      <p class="hint">Couvre les Annales parlementaires (<em>Ann. parl.</em>), le Compte rendu intégral (<em>C.R.I.</em>) et le Compte rendu analytique (<em>C.R.A.</em>).</p>
+      <label>Nature de l'acte</label>
+      <input type="text" id="dbfe-nature" placeholder="ex. : Projet de décret, Proposition de résolution">
+      <label>Intitulé officiel</label>
+      <input type="text" id="dbfe-intitule" placeholder="ex. : portant constitution d'un Institut wallon…">
+      <label>Partie précise</label>
+      <input type="text" id="dbfe-partie" placeholder="ex. : examen des articles, discussion générale">
+      <label>Recueil</label>
+      <select id="dbfe-recueil">
+        <option value="Ann. parl.">Annales parlementaires (Ann. parl.)</option>
+        <option value="C.R.I.">Compte rendu intégral (C.R.I.)</option>
+        <option value="C.R.A.">Compte rendu analytique (C.R.A.)</option>
+      </select>
+      <label>Parlement</label>
+      <select id="dbfe-parl">
+        <option value="Parl. w.">Parlement wallon</option>
+        <option value="Vl. Parl.">Parlement flamand (Vl. Parl.)</option>
+        <option value="Parl. comm. fr.">Parlement de la Communauté française</option>
+        <option value="Parl. D. Gem.">Parlement de la Communauté germanophone</option>
+        <option value="Parl. Rég. Brux.-Cap.">Parlement de la Région de Bruxelles-Capitale</option>
+        <option value="COCOF">COCOF</option>
+        <option value="Ass. réun. C.C.C.">Commission communautaire commune (C.C.C.)</option>
+      </select>
+      <label>Session <span style="font-weight:normal;color:var(--muted)">(ex. : 2012-2013)</span></label>
+      <input type="text" id="dbfe-session" placeholder="ex. : 2012-2013">
+      <label>Date de la séance</label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="dbfe-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="dbfe-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="dbfe-yyyy" placeholder="aaaa">
+      </div>
+      <label>Numéro du document</label>
+      <input type="text" id="dbfe-num" placeholder="ex. : 16">
+      <label>Pages</label>
+      <input type="text" id="dbfe-pages" placeholder="ex. : 29">
+    </div>
+
+    <!-- RAPPORT AU GOUVERNEMENT -->
+    <div id="fields-rapport-gouv" class="card hidden">
+      <h2>Rapport au Gouvernement précédant un arrêté</h2>
+      <label>Gouvernement</label>
+      <select id="rg-gouv">
+        <option value="wallon">Gouvernement wallon</option>
+        <option value="flamand">Gouvernement flamand</option>
+        <option value="gcf">Gouvernement de la Communauté française</option>
+        <option value="gcg">Gouvernement de la Communauté germanophone</option>
+        <option value="gbxl">Gouvernement de la Région de Bruxelles-Capitale</option>
+      </select>
+      <label>Nature de l'acte précédé</label>
+      <select id="rg-acte">
+        <option value="ag">Arrêté du gouvernement</option>
+        <option value="am">Arrêté ministériel</option>
+      </select>
+      <label>Intitulé de l'arrêté</label>
+      <input type="text" id="rg-intitule" placeholder="ex. : relatif à la gestion des eaux">
+      <label>Date de l'arrêté</label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="rg-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="rg-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="rg-yyyy" placeholder="aaaa">
+      </div>
+      <label>Date de publication au <em>M.B.</em></label>
+      <div class="date-group">
+        <input type="number" class="jour-input" id="rg-pub-dd" placeholder="j" min="1" max="31">
+        <select class="mois-select" id="rg-pub-mm"><option value="">— mois —</option></select>
+        <input type="number" class="annee-input" id="rg-pub-yyyy" placeholder="aaaa">
+      </div>
+      <label>Page(s) du <em>M.B.</em></label>
+      <input type="text" id="rg-page" placeholder="ex. : 12345">
+    </div>
+
+  </div><!-- /trav-fields -->
+
+  <!-- Bouton générer -->
+  <div id="generate-btn-wrap" class="hidden" style="margin-bottom:1.5rem;">
+    <button class="btn btn-accent" onclick="generateReference()" style="font-size:1rem; padding:0.75rem 2rem;">▶ Générer la référence</button>
+    <button class="btn btn-outline" onclick="resetForm()" style="margin-left:0.5rem;">✕ Réinitialiser</button>
+  </div>
+
+  <!-- Résultat -->
+  <div id="result-card" class="card hidden">
+    <h2>Référence générée</h2>
+    <p class="result-label">Référence complète :</p>
+    <div id="result-area">&nbsp;</div>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="copyFormatted()">📋 Copier (avec mise en forme)</button>
+      <button class="btn btn-outline" onclick="copyPlain()">📄 Copier (texte brut)</button>
+      <span id="copy-toast" class="copy-toast">✔ Copié !</span>
+    </div>
+    <p class="hint" style="margin-top:0.75rem;">La version « avec mise en forme » conserve l'italique lors du collage dans Word ou LibreOffice.</p>
+  </div>
+
+</div><!-- /container -->
+
+<footer style="text-align:center; padding:1.5rem; color:var(--muted); font-size:0.8rem; border-top:1px solid var(--border); margin-top:2rem;">
+  Outil pédagogique — Référencement d'après le <em>Guide Wolters Kluwer des citations, références et abréviations juridiques</em> (éd. 2017)
+</footer>
+
+<script>
+// ==================== DATA ====================
+
+const MONTHS = ['janvier','février','mars','avril','mai','juin',
+                'juillet','août','septembre','octobre','novembre','décembre'];
+
+const MONTH_IDS = [
+  'loi-mm','loi-pub-mm','ar-mm','ar-pub-mm','amf-mm','amf-pub-mm',
+  'circ-mm','circ-pub-mm','decret-mm','decret-pub-mm','ord-mm','ord-pub-mm',
+  'ag-mm','ag-pub-mm','amfe-mm','amfe-pub-mm','prov-mm','prov-pub-mm',
+  'comm-mm','coord-mm','coord-pub-mm','acc-mm','acc-ass-mm','acc-pub-mm',
+  'cct-mm','cct-ar-mm','cct-ar-pub-mm','err-mm','modif-mm','modif-pub-mm',
+  'cc-mm','circw-mm','circw-consult-mm',
+  'rr-mm','rr-pub-mm','rg-mm','rg-pub-mm',
+  'comm-consult-mm',
+  'dbf-mm','dbfe-mm',
+  'qrq-date-mm','qrq-seance-mm',
+  'qrr-date-mm','qrr-seance-mm'
+];
+
+const GENRE = {
+  'constitution':'m','code':'m','loi':'f','loi-speciale':'f',
+  'arrete-loi':'m','arrete-royal':'m','am-federal':'m',
+  'circulaire-mb':'f','decret':'m','ordonnance':'f',
+  'ag':'m','am-federe':'m','acte-provincial':'m',
+  'acte-communal':'m','lois-coord':'mpl','cct':'f'
+};
+
+const TYPES_EXTRAS = ['loi','loi-speciale','arrete-loi','arrete-royal','am-federal',
+  'circulaire-mb','decret','ordonnance','ag','am-federe'];
+
+const TYPES_ARTS = ['loi','loi-speciale','arrete-loi','arrete-royal','am-federal',
+  'decret','ordonnance','ag','am-federe','lois-coord','accord-coop'];
+
+const ALL_TYPE_FIELDS = [
+  'constitution','code','loi','arrete-royal','am-federal','circulaire-mb',
+  'decret','ordonnance','ag','am-federe','acte-provincial','acte-communal',
+  'lois-coord','accord-coop','cct','circulaire-web'
+];
+
+const ALL_TRAV_FIELDS = [
+  'doc-parl-fed','debats-fed','rapport-roi',
+  'doc-parl-fe','debats-fe','rapport-gouv',
+  'qr-question','qr-reponse'
+];
+
+let currentMode = 'normatif';
+
+// ==================== INIT ====================
+
+function initMonthSelects() {
+  MONTH_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    MONTHS.forEach((m, i) => {
+      const opt = document.createElement('option');
+      opt.value = i + 1;
+      opt.textContent = m;
+      el.appendChild(opt);
+    });
+  });
+}
+
+// ==================== UTILS ====================
+
+function v(id) {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+
+// Met la première lettre en minuscule (pour les intitulés saisis par l'utilisateur)
+function lcFirst(s) {
+  if (!s) return '';
+  return s.charAt(0).toLowerCase() + s.slice(1);
+}
+
+// Met la première lettre en majuscule (pour les noms d'autorités)
+function ucFirst(s) {
+  if (!s) return '';
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+// Corrige les noms propres courants dans les champs libres (insensible à la casse)
+function correctProperNouns(s) {
+  if (!s) return s;
+  return s
+    .replace(/\bconseil d[''’][eé]tat\b/gi, "Conseil d'État")
+    .replace(/\bcour constitutionnelle\b/gi, 'Cour constitutionnelle')
+    .replace(/\bcour de cassation\b/gi, 'Cour de cassation')
+    .replace(/\bcour d[''’]appel\b/gi, "Cour d'appel")
+    .replace(/\bcour du travail\b/gi, 'Cour du travail')
+    .replace(/\btribunal de premi[eè]re instance\b/gi, 'Tribunal de première instance')
+    .replace(/\bmoniteur belge\b/gi, 'Moniteur belge')
+    .replace(/\bparlement europ[eé]en\b/gi, 'Parlement européen');
+}
+
+// Détermine l'article à faire précéder un nom d'autorité (du / de la / de l')
+function articleAutorite(autorite) {
+  const a = autorite.trim().toLowerCase();
+  if (/^[aeiouéèêëàâùûîïœ]/.test(a)) return "de l'";
+  const fem = ['administration','autorité','commission','direction','cour','chambre','présidence'];
+  if (fem.some(f => a.startsWith(f))) return 'de la ';
+  return 'du ';
+}
+
+function fmtDate(d, m, y) {
+  if (!d || !m || !y) return '';
+  const day = parseInt(d);
+  const dayStr = day === 1 ? '1er' : String(day);
+  return `${dayStr} ${MONTHS[parseInt(m)-1]} ${y}`;
+}
+
+function getDate(prefix) {
+  return fmtDate(v(`${prefix}-dd`), v(`${prefix}-mm`), v(`${prefix}-yyyy`));
+}
+
+function fmtErr() {
+  if (!document.getElementById('chk-err').checked) return '';
+  const d = getDate('err');
+  return d ? `, <em>err.</em>, ${d}` : '';
+}
+
+// Détermine l'article défini (la, le, l') en fonction de la nature de l'acte
+function articleDe(nat) {
+  const n = nat.toLowerCase().trim();
+  if (/^[aeiouéèêëàâùûîïœ]/.test(n)) return "l'";
+  const feminins = ['loi','ordonnance','constitution','convention','résolution','circulaire','directive','décision','délibération'];
+  if (feminins.some(f => n.startsWith(f))) return 'la ';
+  return 'le ';
+}
+
+function fmtModif(genre) {
+  if (!document.getElementById('chk-modif').checked) return '';
+  const natRaw = v('modif-nature');
+  const d = getDate('modif');
+  const pub = getDate('modif-pub');
+  if (!d && !natRaw) return '';
+  const word = genre === 'f' ? 'modifiée' : (genre === 'mpl' ? 'modifiés' : 'modifié');
+  let s = `, ${word}`;
+  if (natRaw) {
+    const natLower = natRaw.charAt(0).toLowerCase() + natRaw.slice(1);
+    const article = articleDe(natRaw);
+    s += ` par ${article}${natLower}`;
+  }
+  if (d) s += ` du ${d}`;
+  if (pub) s += `, <em>M.B.</em>, ${pub}`;
+  return s;
+}
+
+function fmtCC() {
+  if (!document.getElementById('chk-cc').checked) return '';
+  const d = getDate('cc');
+  const num = v('cc-num');
+  if (!d && !num) return '';
+  let s = `, annulé(e) par C.C.`;
+  if (d) s += `, ${d}`;
+  if (num) s += `, n° ${num}`;
+  return s;
+}
+
+function fmtArtsOpt() {
+  const type = v('typeSelect');
+  if (!TYPES_ARTS.includes(type)) return '';
+  const raw = v('arts-input');
+  if (!raw) return '';
+  return `, art. ${raw.trim()}`;
+}
+
+function extras(genre) {
+  return fmtErr() + fmtArtsOpt() + fmtModif(genre) + fmtCC();
+}
+
+// ==================== GENERATORS — ACTES NORMATIFS ====================
+
+function genConstitution() {
+  const arts = v('const-arts');
+  if (!arts) return 'Const.';
+  return `Const., art. ${arts}.`;
+}
+
+function genCode() {
+  const sel = v('code-select');
+  const titre = v('code-title');
+  const arts = v('code-arts');
+  let name = '';
+  if (sel === 'autre') {
+    name = titre || '[Intitulé du code manquant]';
+  } else if (sel) {
+    name = sel; // l'abréviation est directement la valeur de l'option
+  } else {
+    return '[Veuillez choisir un code]';
+  }
+  let ref = name;
+  if (arts) ref += `, art. ${arts}`;
+  return ref + '.';
+}
+
+function genLoi() {
+  const type = v('typeSelect');
+  const natures = { 'loi':'Loi', 'loi-speciale':'Loi spéciale', 'arrete-loi':'Arrêté-loi' };
+  const nature = natures[type] || 'Loi';
+  const d = getDate('loi');
+  const title = v('loi-title');
+  const pub = getDate('loi-pub');
+  if (!d) return '[Date de promulgation manquante]';
+  let ref = `${nature} du ${d}`;
+  if (title) ref += ` ${lcFirst(title)}`;
+  if (pub) ref += `, <em>M.B.</em>, ${pub}`;
+  ref += extras(GENRE[type] || 'f');
+  return ref + '.';
+}
+
+function genAR() {
+  const num = v('ar-num');
+  const d = getDate('ar');
+  const title = v('ar-title');
+  const pub = getDate('ar-pub');
+  if (!d) return '[Date de l\'arrêté manquante]';
+  let nature = 'arrêté royal';
+  if (num) nature = `arrêté royal n° ${num}`;
+  let ref = `${nature} du ${d}`;
+  if (title) ref += ` ${lcFirst(title)}`;
+  if (pub) ref += `, <em>M.B.</em>, ${pub}`;
+  ref += extras('m');
+  return ref + '.';
+}
+
+function genAMFederal() {
+  const d = getDate('amf');
+  const title = v('amf-title');
+  const pub = getDate('amf-pub');
+  if (!d) return '[Date manquante]';
+  let ref = `Arrêté ministériel du ${d}`;
+  if (title) ref += ` ${lcFirst(title)}`;
+  if (pub) ref += `, <em>M.B.</em>, ${pub}`;
+  ref += extras('m');
+  return ref + '.';
+}
+
+function genCircMB() {
+  const num = v('circ-num');
+  const autorite = v('circ-autorite');
+  const d = getDate('circ');
+  const title = v('circ-title');
+  const pub = getDate('circ-pub');
+  const pointType = v('circ-point-type');
+  const pointNum = v('circ-point-num');
+  if (!d) return '[Date manquante]';
+  let ref = 'Circulaire';
+  if (num) ref += ` n°${num}`;
+  if (autorite) ref += ` ${articleAutorite(autorite)}${ucFirst(autorite)}`;
+  ref += ` du ${d}`;
+  if (title) ref += ` ${lcFirst(title)}`;
+  if (pub) ref += `, <em>M.B.</em>, ${pub}`;
+  if (pointType && pointNum) {
+    const ptLabel = pointType === 'art' ? 'art.' : 'point';
+    ref += `, ${ptLabel} ${pointNum}`;
+  }
+  return ref + '.';
+}
+
+const DECRET_ENTITES = {
+  'rw':'de la Région wallonne','vl':"de l'Autorité flamande",
+  'cf':'de la Communauté française','cg':'de la Communauté germanophone',
+  'cocof':'de la COCOF','ccc':'de la Commission communautaire commune'
+};
+
+function genDecret() {
+  const entite = v('decret-entite');
+  const d = getDate('decret');
+  const title = v('decret-title');
+  const pub = getDate('decret-pub');
+  if (!d) return '[Date manquante]';
+  const entiteStr = entite ? ` ${DECRET_ENTITES[entite] || ''}` : '';
+  let ref = `Décret${entiteStr} du ${d}`;
+  if (title) ref += ` ${lcFirst(title)}`;
+  if (pub) ref += `, <em>M.B.</em>, ${pub}`;
+  ref += extras('m');
+  return ref + '.';
+}
+
+const ORD_ENTITES = {
+  'rbxl':'de la Région de Bruxelles-Capitale',
+  'ccc':'de la Commission communautaire commune'
+};
+
+function genOrdonnance() {
+  const entite = v('ord-entite');
+  const d = getDate('ord');
+  const title = v('ord-title');
+  const pub = getDate('ord-pub');
+  if (!d) return '[Date manquante]';
+  const entiteStr = entite ? ` ${ORD_ENTITES[entite] || ''}` : '';
+  let ref = `Ordonnance${entiteStr} du ${d}`;
+  if (title) ref += ` ${lcFirst(title)}`;
+  if (pub) ref += `, <em>M.B.</em>, ${pub}`;
+  ref += extras('f');
+  return ref + '.';
+}
+
+const AG_ENTITES = {
+  'gw':'wallon','gvl':'flamand','gcf':'de la Communauté française',
+  'gcg':'de la Communauté germanophone','gbxl':'de la Région de Bruxelles-Capitale',
+  'gccc':'du Collège réuni','gcocof':'de la COCOF'
+};
+
+function genAG() {
+  const entite = v('ag-entite');
+  const d = getDate('ag');
+  const title = v('ag-title');
+  const pub = getDate('ag-pub');
+  if (!d) return '[Date manquante]';
+  const suffixe = entite ? ` ${AG_ENTITES[entite] || ''}` : '';
+  let ref = `Arrêté du Gouvernement${suffixe} du ${d}`;
+  if (title) ref += ` ${lcFirst(title)}`;
+  if (pub) ref += `, <em>M.B.</em>, ${pub}`;
+  ref += extras('m');
+  return ref + '.';
+}
+
+const AMFE_ENTITES = {
+  'rw':'de la Région wallonne','vl':"de l'Autorité flamande",
+  'cf':'de la Communauté française','cg':'de la Communauté germanophone',
+  'rbxl':'de la Région de Bruxelles-Capitale'
+};
+
+function genAMFedere() {
+  const entite = v('amfe-entite');
+  const d = getDate('amfe');
+  const title = v('amfe-title');
+  const pub = getDate('amfe-pub');
+  if (!d) return '[Date manquante]';
+  const entiteStr = entite ? ` ${AMFE_ENTITES[entite] || ''}` : '';
+  let ref = `Arrêté ministériel${entiteStr} du ${d}`;
+  if (title) ref += ` ${lcFirst(title)}`;
+  if (pub) ref += `, <em>M.B.</em>, ${pub}`;
+  ref += extras('m');
+  return ref + '.';
+}
+
+function genActeProvincial() {
+  const nature = v('prov-nature') || 'Règlement';
+  const organe = v('prov-organe');
+  const province = v('prov-nom');
+  const d = getDate('prov');
+  const title = v('prov-title');
+  const recueil = v('prov-recueil');
+  const pub = getDate('prov-pub');
+  const organeLabels = { 'conseil':'Conseil provincial','college-w':'Collège provincial','college-vl':'Députation' };
+  const provStr = province ? ` de ${province}` : '';
+  if (!d) return '[Date manquante]';
+  let ref;
+  if (organe === 'aucun') {
+    ref = `${nature}${provStr} du ${d}`;
+  } else {
+    const organeStr = organeLabels[organe] || organe;
+    ref = `${nature} du ${organeStr}${provStr} du ${d}`;
+  }
+  if (title) ref += ` ${lcFirst(title)}`;
+  if (pub) {
+    const recueilTag = recueil === 'mem' ? '<em>Mém. adm.</em>' : '<em>Bull. prov.</em>';
+    ref += `, ${recueilTag}, ${pub}`;
+  }
+  return ref + '.';
+}
+
+function genActeCommunal() {
+  const nature = v('comm-nature') || 'Règlement';
+  const organe = v('comm-organe');
+  const commune = v('comm-nom');
+  const d = getDate('comm');
+  const title = v('comm-title');
+  const url = v('comm-url');
+  const consult = getDate('comm-consult');
+  const organeLabels = {
+    'conseil': 'Conseil communal',
+    'college': 'Collège des bourgmestre et échevins',
+    'college-ech': 'Collège échevinal'
+  };
+  const commStr = commune ? ` de ${commune}` : '';
+  if (!d) return '[Date manquante]';
+  let ref;
+  if (organe === 'aucun') {
+    ref = `${nature}${commStr} du ${d}`;
+  } else {
+    const organeStr = organeLabels[organe] || organe;
+    ref = `${nature} du ${organeStr}${commStr} du ${d}`;
+  }
+  if (title) ref += ` ${lcFirst(title)}`;
+  if (url) ref += `, disponible sur ${url}`;
+  if (consult) ref += `, consulté le ${consult}`;
+  return ref + '.';
+}
+
+function genLoisCoord() {
+  const nature = v('coord-nature');
+  const d = getDate('coord');
+  const title = v('coord-title');
+  const pub = getDate('coord-pub');
+  const labels = { 'lois':'Lois','decrets':'Décrets','ordonnances':'Ordonnances' };
+  const nat = labels[nature] || nature;
+  if (!d) return '[Date manquante]';
+  let ref = `${nat} coordonnées du ${d}`;
+  if (title) ref += ` ${lcFirst(title)}`;
+  if (pub) ref += `, <em>M.B.</em>, ${pub}`;
+  return ref + '.';
+}
+
+function genAccordCoop() {
+  const d = getDate('acc');
+  const parties = v('acc-parties');
+  const title = v('acc-title');
+  const assType = v('acc-ass-type');
+  const dAss = getDate('acc-ass');
+  const pub = getDate('acc-pub');
+  if (!d) return '[Date manquante]';
+  const assLabels = {
+    'loi':'loi','loi-speciale':'loi spéciale','decret':'décret',
+    'ordonnance':'ordonnance','arrete-loi':'arrêté-loi'
+  };
+  const assName = assLabels[assType] || 'loi';
+  let ref = `Accord de coopération du ${d}`;
+  if (parties) ref += ` ${lcFirst(parties)}`;
+  if (title) ref += ` ${lcFirst(title)}`;
+  if (dAss || pub) {
+    ref += `, approuvé par ${articleDe(assName)}${assName}`;
+    if (dAss) ref += ` du ${dAss}`;
+    if (pub) ref += `, <em>M.B.</em>, ${pub}`;
+  }
+  return ref + '.';
+}
+
+function genCCT() {
+  const type = v('cct-type');
+  const num = v('cct-num');
+  const enceinte = v('cct-enceinte');
+  const d = getDate('cct');
+  const title = v('cct-title');
+  const arChecked = document.getElementById('cct-ar').checked;
+  const arts = v('cct-arts');
+
+  let ref = 'Convention collective de travail';
+  if (type === 'numerotee' && num) ref += ` n° ${num}`;
+  if (d) ref += ` du ${d}`;
+  if (title) ref += ` ${lcFirst(title)}`;
+  if (type === 'sectorielle' && enceinte) {
+    ref += `, conclue au sein de la Commission paritaire ${enceinte}`;
+  }
+
+  if (arChecked) {
+    const dAR = getDate('cct-ar');
+    const pubAR = getDate('cct-ar-pub');
+    ref += ', rendue obligatoire par arrêté royal';
+    if (dAR) ref += ` du ${dAR}`;
+    if (pubAR) ref += `, <em>M.B.</em>, ${pubAR}`;
+  }
+  if (arts) ref += `, art. ${arts}`;
+  return ref + '.';
+}
+
+function genCircWeb() {
+  const num = v('circw-num');
+  const autorite = v('circw-autorite');
+  const d = getDate('circw');
+  const title = v('circw-title');
+  const pointType = v('circw-point-type');
+  const pointNum = v('circw-point-num');
+  const url = v('circw-url');
+  const consult = getDate('circw-consult');
+  if (!d) return '[Date manquante]';
+  let ref = 'Circulaire';
+  if (num) ref += ` n°${num}`;
+  if (autorite) ref += ` ${articleAutorite(autorite)}${ucFirst(autorite)}`;
+  ref += ` du ${d}`;
+  if (title) ref += ` ${lcFirst(title)}`;
+  if (pointType && pointNum) {
+    const ptLabel = pointType === 'art' ? 'art.' : 'point';
+    ref += `, ${ptLabel} ${pointNum}`;
+  }
+  if (url) ref += `, disponible sur ${url}`;
+  if (consult) ref += `, consulté le ${consult}`;
+  return ref + '.';
+}
+
+// ==================== GENERATORS — TRAVAUX PRÉPARATOIRES ====================
+
+function genDocParlFed() {
+  const ass = v('dpf-assemblee');
+  const sess = v('dpf-session');
+  const num = v('dpf-num');
+  const nature = v('dpf-nature');
+  const intitule = v('dpf-intitule');
+  const partie = correctProperNouns(v('dpf-partie'));
+  const pages = v('dpf-pages');
+  // Format: [nature] [intitulé], [partie], Doc., [ass], [session], n°[num], p. [pages]
+  let ref = '';
+  if (nature) {
+    ref += ucFirst(nature);
+    if (intitule) ref += ` ${lcFirst(intitule)}`;
+  } else if (intitule) {
+    ref += ucFirst(intitule);
+  }
+  if (partie) ref += (ref ? `, ${lcFirst(partie)}` : ucFirst(partie));
+  ref += (ref ? ', ' : '') + `<em>Doc.</em>, ${ass}`;
+  if (sess) ref += `, ${sess}`;
+  if (num) ref += `, n°${num}`;
+  if (pages) ref += `, p. ${pages}`;
+  return ref + '.';
+}
+
+function genDebatsFed() {
+  const nature = v('dbf-nature');
+  const intitule = v('dbf-intitule');
+  const partie = correctProperNouns(v('dbf-partie'));
+  const recueil = v('dbf-recueil') || 'Ann. parl.';
+  const ass = v('dbf-assemblee');
+  const sess = v('dbf-session');
+  const d = getDate('dbf');
+  const num = v('dbf-num');
+  const pages = v('dbf-pages');
+  let ref = '';
+  if (nature) {
+    ref += ucFirst(nature);
+    if (intitule) ref += ` ${lcFirst(intitule)}`;
+  } else if (intitule) {
+    ref += ucFirst(intitule);
+  }
+  if (partie) ref += (ref ? `, ${lcFirst(partie)}` : ucFirst(partie));
+  ref += (ref ? ', ' : '') + `<em>${recueil}</em>`;
+  if (ass) ref += `, ${ass}`;
+  if (sess) ref += `, ${sess}`;
+  if (d) ref += `, séance du ${d}`;
+  if (num) ref += `, n°${num}`;
+  if (pages) ref += `, p. ${pages}`;
+  return ref + '.';
+}
+
+function getQRRecueil(prefix) {
+  const sel = v(`${prefix}-recueil`);
+  return sel === 'autre' ? (v(`${prefix}-recueil-autre`) || 'Q.R.') : sel;
+}
+
+function articleDAuteur(auteur) {
+  if (!auteur) return 'de ';
+  const a = auteur.trim().toLowerCase();
+  return /^[aeiouéèêëàâùûîïœ]/.test(a) ? "d'" : 'de ';
+}
+
+function genQRQuestion() {
+  const nature = v('qrq-nature');
+  const num = v('qrq-num');
+  const auteur = v('qrq-auteur');
+  const dateQ = getDate('qrq-date');
+  const recueil = getQRRecueil('qrq');
+  const ass = v('qrq-assemblee');
+  const sess = v('qrq-session');
+  const dateSeance = getDate('qrq-seance');
+  const docnum = v('qrq-docnum');
+  const pages = v('qrq-pages');
+  const natLabels = { 'question':'Question','interpellation':'Interpellation','demande':"Demande d'explications" };
+  const natStr = natLabels[nature] || ucFirst(nature);
+  let ref = natStr;
+  if (num) ref += ` n°${num}`;
+  if (auteur) ref += ` ${articleDAuteur(auteur)}${ucFirst(auteur)}`;
+  if (dateQ) ref += ` du ${dateQ}`;
+  if (recueil) ref += `, <em>${recueil}</em>`;
+  if (ass) ref += `, ${ass}`;
+  if (sess) ref += `, ${sess}`;
+  if (dateSeance) ref += `, séance du ${dateSeance}`;
+  if (docnum) ref += `, n°${docnum}`;
+  if (pages) ref += `, p. ${pages}`;
+  return ref + '.';
+}
+
+function genQRReponse() {
+  const dateRep = getDate('qrr-date');
+  const nature = v('qrr-nature');
+  const num = v('qrr-num');
+  const auteur = v('qrr-auteur');
+  const recueil = getQRRecueil('qrr');
+  const ass = v('qrr-assemblee');
+  const sess = v('qrr-session');
+  const dateSeance = getDate('qrr-seance');
+  const docnum = v('qrr-docnum');
+  const pages = v('qrr-pages');
+  const natArticle = { 'question':'à la question','interpellation':"à l'interpellation",'demande':"à la demande d'explications" };
+  const natStr = natArticle[nature] || `à la ${lcFirst(nature)}`;
+  let ref = 'Réponse donnée';
+  if (dateRep) ref += ` le ${dateRep}`;
+  ref += ` ${natStr}`;
+  if (num) ref += ` n°${num}`;
+  if (auteur) ref += ` ${articleDAuteur(auteur)}${ucFirst(auteur)}`;
+  if (recueil) ref += `, <em>${recueil}</em>`;
+  if (ass) ref += `, ${ass}`;
+  if (sess) ref += `, ${sess}`;
+  if (dateSeance) ref += `, séance du ${dateSeance}`;
+  if (docnum) ref += `, n°${docnum}`;
+  if (pages) ref += `, p. ${pages}`;
+  return ref + '.';
+}
+
+function genRapportRoi() {
+  const intitule = v('rr-intitule');
+  const d = getDate('rr');
+  const pub = getDate('rr-pub');
+  const page = v('rr-page');
+  if (!d) return '[Date de l\'arrêté manquante]';
+  let ref = "Rapport au Roi précédant l'arrêté royal";
+  if (intitule) ref += ` ${lcFirst(intitule)}`;
+  ref += ` du ${d}`;
+  if (pub) ref += `, <em>M.B.</em>, ${pub}`;
+  if (page) ref += `, p. ${page}`;
+  return ref + '.';
+}
+
+function toggleQRQAutre() {
+  document.getElementById('qrq-recueil-autre-block').classList.toggle('hidden', v('qrq-recueil') !== 'autre');
+}
+function toggleQRRAutre() {
+  document.getElementById('qrr-recueil-autre-block').classList.toggle('hidden', v('qrr-recueil') !== 'autre');
+}
+
+function genDocParlFE() {
+  const parl = v('dpfe-parl');
+  const sess = v('dpfe-session');
+  const num = v('dpfe-num');
+  const nature = v('dpfe-nature');
+  const intitule = v('dpfe-intitule');
+  const partie = correctProperNouns(v('dpfe-partie'));
+  const pages = v('dpfe-pages');
+  // Format: [nature] [intitulé], [partie], Doc., [parl], [session], n°[num], p. [pages]
+  let ref = '';
+  if (nature) {
+    ref += ucFirst(nature);
+    if (intitule) ref += ` ${lcFirst(intitule)}`;
+  } else if (intitule) {
+    ref += ucFirst(intitule);
+  }
+  if (partie) ref += (ref ? `, ${lcFirst(partie)}` : ucFirst(partie));
+  ref += (ref ? ', ' : '') + `<em>Doc.</em>, ${parl}`;
+  if (sess) ref += `, ${sess}`;
+  if (num) ref += `, n°${num}`;
+  if (pages) ref += `, p. ${pages}`;
+  return ref + '.';
+}
+
+function genDebatsFE() {
+  const nature = v('dbfe-nature');
+  const intitule = v('dbfe-intitule');
+  const partie = correctProperNouns(v('dbfe-partie'));
+  const recueil = v('dbfe-recueil') || 'Ann. parl.';
+  const parl = v('dbfe-parl');
+  const sess = v('dbfe-session');
+  const d = getDate('dbfe');
+  const num = v('dbfe-num');
+  const pages = v('dbfe-pages');
+  let ref = '';
+  if (nature) {
+    ref += ucFirst(nature);
+    if (intitule) ref += ` ${lcFirst(intitule)}`;
+  } else if (intitule) {
+    ref += ucFirst(intitule);
+  }
+  if (partie) ref += (ref ? `, ${lcFirst(partie)}` : ucFirst(partie));
+  ref += (ref ? ', ' : '') + `<em>${recueil}</em>`;
+  if (parl) ref += `, ${parl}`;
+  if (sess) ref += `, ${sess}`;
+  if (d) ref += `, séance du ${d}`;
+  if (num) ref += `, n°${num}`;
+  if (pages) ref += `, p. ${pages}`;
+  return ref + '.';
+}
+
+function genRapportGouv() {
+  const gouvMap = {
+    'wallon':'wallon','flamand':'flamand','gcf':'de la Communauté française',
+    'gcg':'de la Communauté germanophone','gbxl':'de la Région de Bruxelles-Capitale'
+  };
+  const gouv = v('rg-gouv');
+  const acte = v('rg-acte');
+  const intitule = v('rg-intitule');
+  const d = getDate('rg');
+  const pub = getDate('rg-pub');
+  const page = v('rg-page');
+  const gouvStr = gouvMap[gouv] || gouv;
+  const acteStr = acte === 'am' ? 'arrêté ministériel' : 'arrêté du gouvernement';
+  if (!d) return '[Date de l\'arrêté manquante]';
+  let ref = `Rapport au Gouvernement ${gouvStr} précédant l'${acteStr}`;
+  if (intitule) ref += ` ${lcFirst(intitule)}`;
+  ref += ` du ${d}`;
+  if (pub) ref += `, <em>M.B.</em>, ${pub}`;
+  if (page) ref += `, p. ${page}`;
+  return ref + '.';
+}
+
+// ==================== DISPATCH ====================
+
+function generateReference() {
+  let result = '';
+  if (currentMode === 'normatif') {
+    const type = v('typeSelect');
+    switch(type) {
+      case 'constitution':    result = genConstitution(); break;
+      case 'code':            result = genCode(); break;
+      case 'loi':
+      case 'loi-speciale':
+      case 'arrete-loi':      result = genLoi(); break;
+      case 'arrete-royal':    result = genAR(); break;
+      case 'am-federal':      result = genAMFederal(); break;
+      case 'circulaire-mb':   result = genCircMB(); break;
+      case 'decret':          result = genDecret(); break;
+      case 'ordonnance':      result = genOrdonnance(); break;
+      case 'ag':              result = genAG(); break;
+      case 'am-federe':       result = genAMFedere(); break;
+      case 'acte-provincial': result = genActeProvincial(); break;
+      case 'acte-communal':   result = genActeCommunal(); break;
+      case 'lois-coord':      result = genLoisCoord(); break;
+      case 'accord-coop':     result = genAccordCoop(); break;
+      case 'cct':             result = genCCT(); break;
+      case 'circulaire-web':  result = genCircWeb(); break;
+      default: result = '[Veuillez sélectionner un type de norme]';
+    }
+  } else {
+    const type = v('travSelect');
+    switch(type) {
+      case 'doc-parl-fed':   result = genDocParlFed(); break;
+      case 'debats-fed':     result = genDebatsFed(); break;
+      case 'rapport-roi':    result = genRapportRoi(); break;
+      case 'doc-parl-fe':    result = genDocParlFE(); break;
+      case 'debats-fe':      result = genDebatsFE(); break;
+      case 'rapport-gouv':   result = genRapportGouv(); break;
+      case 'qr-question':    result = genQRQuestion(); break;
+      case 'qr-reponse':     result = genQRReponse(); break;
+      default: result = '[Veuillez sélectionner un type de travail préparatoire]';
+    }
+  }
+  document.getElementById('result-area').innerHTML = result;
+  document.getElementById('result-card').classList.remove('hidden');
+  document.getElementById('result-card').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+// ==================== COPY ====================
+
+function showToast() {
+  const t = document.getElementById('copy-toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+function copyFormatted() {
+  const html = document.getElementById('result-area').innerHTML;
+  const plain = document.getElementById('result-area').textContent;
+  try {
+    navigator.clipboard.write([new ClipboardItem({
+      'text/html': new Blob([`<html><body>${html}</body></html>`], {type:'text/html'}),
+      'text/plain': new Blob([plain], {type:'text/plain'})
+    })]).then(() => showToast()).catch(() => copyPlain());
+  } catch(e) { copyPlain(); }
+}
+
+function copyPlain() {
+  const text = document.getElementById('result-area').textContent;
+  navigator.clipboard.writeText(text).then(() => showToast()).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast();
+  });
+}
+
+// ==================== MODE / FIELD MANAGEMENT ====================
+
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('tab-normatif').classList.toggle('active', mode === 'normatif');
+  document.getElementById('tab-travprep').classList.toggle('active', mode === 'travprep');
+  document.getElementById('type-normatif-wrap').classList.toggle('hidden', mode !== 'normatif');
+  document.getElementById('type-travprep-wrap').classList.toggle('hidden', mode !== 'travprep');
+  // Reset both sides
+  hideAllNormatif();
+  hideAllTrav();
+  document.getElementById('form-fields').classList.add('hidden');
+  document.getElementById('trav-fields').classList.add('hidden');
+  document.getElementById('generate-btn-wrap').classList.add('hidden');
+  document.getElementById('result-card').classList.add('hidden');
+  document.getElementById('typeSelect').selectedIndex = 0;
+  document.getElementById('travSelect').selectedIndex = 0;
+}
+
+function hideAllNormatif() {
+  ALL_TYPE_FIELDS.forEach(t => {
+    const el = document.getElementById(`fields-${t}`);
+    if (el) el.classList.add('hidden');
+  });
+  const ot = document.getElementById('options-transversales');
+  if (ot) ot.classList.add('hidden');
+  const ab = document.getElementById('arts-block');
+  if (ab) ab.classList.add('hidden');
+}
+
+function hideAllTrav() {
+  ALL_TRAV_FIELDS.forEach(t => {
+    const el = document.getElementById(`fields-${t}`);
+    if (el) el.classList.add('hidden');
+  });
+}
+
+function updateFields() {
+  const type = v('typeSelect');
+  hideAllNormatif();
+  if (!type) {
+    document.getElementById('form-fields').classList.add('hidden');
+    document.getElementById('generate-btn-wrap').classList.add('hidden');
+    return;
+  }
+  document.getElementById('form-fields').classList.remove('hidden');
+  document.getElementById('generate-btn-wrap').classList.remove('hidden');
+
+  const blockId = (type === 'loi-speciale' || type === 'arrete-loi') ? 'loi' : type;
+  const block = document.getElementById(`fields-${blockId}`);
+  if (block) block.classList.remove('hidden');
+
+  if (['loi','loi-speciale','arrete-loi'].includes(type)) {
+    const labels = {'loi':'Loi ordinaire','loi-speciale':'Loi spéciale','arrete-loi':'Arrêté-loi'};
+    document.getElementById('loi-nature-display').textContent = labels[type] || '';
+  }
+  if (TYPES_EXTRAS.includes(type)) {
+    document.getElementById('options-transversales').classList.remove('hidden');
+  }
+  if (TYPES_ARTS.includes(type)) {
+    document.getElementById('arts-block').classList.remove('hidden');
+  }
+  // Hide CC option for types that cannot be annulled by the Cour constitutionnelle
+  const ccRow = document.getElementById('cc-option-row');
+  if (ccRow) {
+    const noCC = ['circulaire-mb','am-federal','am-federe','acte-provincial','acte-communal','accord-coop','cct'];
+    ccRow.classList.toggle('hidden', noCC.includes(type));
+  }
+}
+
+function updateTravFields() {
+  const type = v('travSelect');
+  hideAllTrav();
+  if (!type) {
+    document.getElementById('trav-fields').classList.add('hidden');
+    document.getElementById('generate-btn-wrap').classList.add('hidden');
+    return;
+  }
+  document.getElementById('trav-fields').classList.remove('hidden');
+  document.getElementById('generate-btn-wrap').classList.remove('hidden');
+  const block = document.getElementById(`fields-${type}`);
+  if (block) block.classList.remove('hidden');
+}
+
+function updateCodeFields() {
+  const sel = v('code-select');
+  document.getElementById('code-autre-block').classList.toggle('hidden', sel !== 'autre');
+}
+
+function updateCCTFields() {
+  const type = v('cct-type');
+  document.getElementById('cct-num-block').classList.toggle('hidden', type !== 'numerotee');
+  document.getElementById('cct-enceinte-block').classList.toggle('hidden', type === 'numerotee');
+}
+
+function toggleOptional(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('hidden');
+}
+
+function resetForm() {
+  document.querySelectorAll('input[type="text"],input[type="number"],input[type="url"]').forEach(i => i.value = '');
+  document.querySelectorAll('select').forEach(s => s.selectedIndex = 0);
+  document.querySelectorAll('input[type="checkbox"]').forEach(c => {
+    c.checked = false;
+    const map = {'chk-err':'err-block','chk-modif':'modif-block','chk-cc':'cc-block','cct-ar':'cct-ar-block'};
+    if (map[c.id]) document.getElementById(map[c.id]).classList.add('hidden');
+  });
+  document.getElementById('result-card').classList.add('hidden');
+  document.getElementById('result-area').innerHTML = '&nbsp;';
+  hideAllNormatif();
+  hideAllTrav();
+  document.getElementById('form-fields').classList.add('hidden');
+  document.getElementById('trav-fields').classList.add('hidden');
+  document.getElementById('generate-btn-wrap').classList.add('hidden');
+  document.getElementById('code-autre-block').classList.add('hidden');
+  document.getElementById('cct-enceinte-block').classList.add('hidden');
+  document.getElementById('cct-num-block').classList.remove('hidden');
+}
+
+// ==================== BOOT ====================
+initMonthSelects();
+
+// Pré-remplissage des champs année à l'année courante si vides (pour que les flèches partent d'un point utile)
+(function initYearInputs() {
+  const currentYear = new Date().getFullYear();
+  document.querySelectorAll('.annee-input').forEach(inp => {
+    inp.addEventListener('focus', function() {
+      if (!this.value) this.value = currentYear;
+    });
+    inp.addEventListener('blur', function() {
+      if (this.value && parseInt(this.value) < 1800) this.value = '';
+    });
+  });
+})();
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('cct-ar').addEventListener('change', function() {
+    document.getElementById('cct-ar-block').classList.toggle('hidden', !this.checked);
+  });
+});
+</script>
+</body>
+</html>
