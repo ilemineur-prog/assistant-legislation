@@ -87,6 +87,14 @@
   .wip-card h3 { color: var(--primary); margin-bottom: 0.6rem; font-size: 1.15rem; }
   .wip-card p { color: var(--muted); max-width: 440px; margin: 0 auto; font-size: 0.9rem; }
   header .credit-header { color: #a0b4cc; font-size: 0.78rem; margin-top: 0.6rem; font-style: italic; line-height: 1.45; }
+
+  /* ===== Avertissement de bas de page (toutes les pages) ===== */
+  .avertissement { max-width: 860px; margin: 2.5rem auto 0; padding: 0 1.5rem; }
+  .avertissement p { background: #fdf6e3; border: 1px solid #e3d08a; border-left: 4px solid #c7a83a;
+    border-radius: var(--radius); padding: 0.9rem 1.1rem; color: #6b5214; font-size: 0.82rem;
+    line-height: 1.6; margin: 0; }
+  .avertissement em { font-style: italic; }
+  @media (max-width: 600px) { .avertissement { padding: 0 1rem; } }
 </style>
 </head>
 <body>
@@ -1136,6 +1144,10 @@
 </div><!-- /container -->
 </div><!-- /form-page -->
 
+<div class="avertissement">
+  <p>⚠ <strong>Avertissement :</strong> cette application peut commettre des erreurs. Vérifiez toujours la référence proposée à l'aide du <em>Guide des citations, références et abréviations juridiques</em> (Kluwer, 2017). Pour les cas de référencement très particuliers, non couverts par l'outil, reportez-vous directement au Guide.</p>
+</div>
+
 <footer style="text-align:center; padding:1.5rem; color:var(--muted); font-size:0.8rem; border-top:1px solid var(--border); margin-top:2rem;">
   Outil pédagogique — Référencement d'après le <em>Guide Wolters Kluwer des citations, références et abréviations juridiques</em> (éd. 2017)
 </footer>
@@ -1210,6 +1222,64 @@ function v(id) {
   return el ? el.value.trim() : '';
 }
 
+
+// ==================== CASSE DES CHAMPS LIBRES ====================
+// Si l'utilisateur saisit un champ ENTIEREMENT en capitales, on repasse le texte
+// en minuscules : les regles de citation veulent des intitules en bas de casse
+// (avec, le cas echeant, une majuscule au premier mot, posee ensuite par ucFirst).
+// Un texte deja en casse mixte n'est jamais touche.
+// Les sigles usuels sont restaures apres la mise en minuscules.
+var SIGLES = ['M.B.','C.C.T.','CPAS','OCMW','SPF','SPW','ONSS','INAMI','TVA','ASBL',
+              'AISBL','SRL','SPRL','SCRL','SA','UE','CE','CEDH','SNCB','ONEM','FOREM',
+              'ACTIRIS','COCOF','COCOM','VGC','IPP','ISOC','ARES'];
+
+function restaurerSigles(s) {
+  SIGLES.forEach(function (sig) {
+    var motif = sig.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    s = s.replace(new RegExp('(^|[^\\w.])' + motif + '(?![\\w])', 'gi'),
+                  function (m, av) { return av + sig; });
+  });
+  return s;
+}
+
+function deCapitaliser(s) {
+  if (!s) return s;
+  var lettres = String(s).replace(/[^A-Za-z\u00C0-\u017F]/g, '');
+  if (lettres.length < 4) return s;        // trop court pour trancher (sigle probable)
+  if (/[a-z\u00E0-\u00FF]/.test(s)) return s;  // deja des minuscules : on ne touche a rien
+  return restaurerSigles(String(s).toLowerCase());
+}
+
+// Lecture d'un champ de texte libre, casse normalisee
+function tx(id) { return deCapitaliser(v(id)); }
+
+// Majuscule au premier mot de la reference, en sautant une eventuelle balise
+// (<em>...</em>) ou un guillemet ouvrant. Ne touche pas a un texte deja capitalise.
+function ucPremierMot(html) {
+  if (!html) return html;
+  return String(html).replace(
+    /^((?:<[^>]+>|[\s\u00ab"'(\[])*)([a-z\u00e0-\u00ff])/,
+    function (m, avant, c) { return avant + c.toUpperCase(); });
+}
+
+// Noms propres composes : « woluwe-saint-lambert » -> « Woluwe-Saint-Lambert »,
+// « braine-l'alleud » -> « Braine-l'Alleud ». Les particules restent en bas de casse.
+var PARTICULES = ["l'","l\u2019","la","le","les","lez","sur","sous","en","et","de","du","des","d'","d\u2019","aux","au"];
+function ucNomPropre(s) {
+  if (!s) return s;
+  var premier = true;
+  return String(s).replace(/[^\s\-]+/g, function (mot) {
+    var bas = mot.toLowerCase();
+    var part = PARTICULES.indexOf(bas) >= 0;
+    // « l'alleud » : particule collee au mot suivant
+    var m = bas.match(/^(l['\u2019]|d['\u2019])(.+)$/);
+    if (m && !premier) { premier = false; return m[1] + m[2].charAt(0).toUpperCase() + m[2].slice(1); }
+    if (part && !premier) { premier = false; return bas; }
+    premier = false;
+    return mot.charAt(0).toUpperCase() + mot.slice(1);
+  });
+}
+
 // Met la première lettre en minuscule (pour les intitulés saisis par l'utilisateur)
 function lcFirst(s) {
   if (!s) return '';
@@ -1282,7 +1352,7 @@ function motConsulte(nature) {
 function fmtModif(genre) {
   if (!document.getElementById('chk-modif').checked) return '';
   const sel = v('modif-nature-select');
-  const natRaw = (sel && sel !== 'autre') ? sel : v('modif-nature');
+  const natRaw = (sel && sel !== 'autre') ? sel : tx('modif-nature');
   const d = getDate('modif');
   const pub = getDate('modif-pub');
   if (!d && !natRaw) return '';
@@ -1441,6 +1511,12 @@ function normArts(raw) {
   var s = String(raw).trim().replace(/\s+/g, ' ');
   if (!s) return '';
 
+  // L'utilisateur ecrit parfois « article 5 », « art. 5 », « ARTICLES 5 et 7 » :
+  // la formule pose deja « art. », on retire donc la mention en TETE de champ.
+  // Un « art. » interne est conserve (ex. « 2, § 3, al. 3, et art. 5 »).
+  s = s.replace(/^(?:articles?|artt?\.?|art)\s*\.?\s*/i, '').trim();
+  if (!s) return '';
+
   // Article subdivis\u00e9 (r\u00e8gle 88)
   if (SUBDIV_RE.test(s)) {
     s = abregerSubdiv(s);
@@ -1478,11 +1554,11 @@ function genConstitution() {
 
 function genCode() {
   const sel = v('code-select');
-  const titre = v('code-title');
+  const titre = tx('code-title');
   const arts = normArts(v('code-arts'));
   let name = '';
   if (sel === 'autre') {
-    name = titre || '[Intitulé du code manquant]';
+    name = ucFirst(titre) || '[Intitulé du code manquant]';
   } else if (sel) {
     name = sel; // l'abréviation est directement la valeur de l'option
   } else {
@@ -1498,7 +1574,7 @@ function genLoi() {
   const natures = { 'loi':'Loi', 'loi-speciale':'Loi spéciale', 'arrete-loi':'Arrêté-loi' };
   const nature = natures[type] || 'Loi';
   const d = getDate('loi');
-  const title = v('loi-title');
+  const title = tx('loi-title');
   const pub = getDate('loi-pub');
   if (!d) return '[Date de promulgation manquante]';
   let ref = `${nature} du ${d}`;
@@ -1511,7 +1587,7 @@ function genLoi() {
 function genAR() {
   const num = v('ar-num');
   const d = getDate('ar');
-  const title = v('ar-title');
+  const title = tx('ar-title');
   const pub = getDate('ar-pub');
   if (!d) return '[Date de l\'arrêté manquante]';
   let nature = 'arrêté royal';
@@ -1525,7 +1601,7 @@ function genAR() {
 
 function genAMFederal() {
   const d = getDate('amf');
-  const title = v('amf-title');
+  const title = tx('amf-title');
   const pub = getDate('amf-pub');
   if (!d) return '[Date manquante]';
   let ref = `Arrêté ministériel du ${d}`;
@@ -1537,9 +1613,9 @@ function genAMFederal() {
 
 function genCircMB() {
   const num = v('circ-num');
-  const autorite = v('circ-autorite');
+  const autorite = tx('circ-autorite');
   const d = getDate('circ');
-  const title = v('circ-title');
+  const title = tx('circ-title');
   const pub = getDate('circ-pub');
   const pointType = v('circ-point-type');
   const pointNum = v('circ-point-num');
@@ -1566,7 +1642,7 @@ const DECRET_ENTITES = {
 function genDecret() {
   const entite = v('decret-entite');
   const d = getDate('decret');
-  const title = v('decret-title');
+  const title = tx('decret-title');
   const pub = getDate('decret-pub');
   if (!d) return '[Date manquante]';
   const entiteStr = entite ? ` ${DECRET_ENTITES[entite] || ''}` : '';
@@ -1585,7 +1661,7 @@ const ORD_ENTITES = {
 function genOrdonnance() {
   const entite = v('ord-entite');
   const d = getDate('ord');
-  const title = v('ord-title');
+  const title = tx('ord-title');
   const pub = getDate('ord-pub');
   if (!d) return '[Date manquante]';
   const entiteStr = entite ? ` ${ORD_ENTITES[entite] || ''}` : '';
@@ -1605,7 +1681,7 @@ const AG_ENTITES = {
 function genAG() {
   const entite = v('ag-entite');
   const d = getDate('ag');
-  const title = v('ag-title');
+  const title = tx('ag-title');
   const pub = getDate('ag-pub');
   if (!d) return '[Date manquante]';
   const suffixe = entite ? ` ${AG_ENTITES[entite] || ''}` : '';
@@ -1625,7 +1701,7 @@ const AMFE_ENTITES = {
 function genAMFedere() {
   const entite = v('amfe-entite');
   const d = getDate('amfe');
-  const title = v('amfe-title');
+  const title = tx('amfe-title');
   const pub = getDate('amfe-pub');
   if (!d) return '[Date manquante]';
   const entiteStr = entite ? ` ${AMFE_ENTITES[entite] || ''}` : '';
@@ -1639,13 +1715,13 @@ function genAMFedere() {
 function genActeProvincial() {
   const nature = v('prov-nature') || 'Règlement';
   const organe = v('prov-organe');
-  const province = v('prov-nom');
+  const province = tx('prov-nom');
   const d = getDate('prov');
-  const title = v('prov-title');
+  const title = tx('prov-title');
   const recueil = v('prov-recueil');
   const pub = getDate('prov-pub');
   const organeLabels = { 'conseil':'Conseil provincial','college-w':'Collège provincial','college-vl':'Députation' };
-  const provStr = province ? ` de ${province}` : '';
+  const provStr = province ? ` de ${ucNomPropre(province)}` : '';
   if (!d) return '[Date manquante]';
   let ref;
   if (organe === 'aucun') {
@@ -1665,9 +1741,9 @@ function genActeProvincial() {
 function genActeCommunal() {
   const nature = v('comm-nature') || 'Règlement';
   const organe = v('comm-organe');
-  const commune = v('comm-nom');
+  const commune = tx('comm-nom');
   const d = getDate('comm');
-  const title = v('comm-title');
+  const title = tx('comm-title');
   const url = v('comm-url');
   const consult = getDate('comm-consult');
   const organeLabels = {
@@ -1675,7 +1751,7 @@ function genActeCommunal() {
     'college': 'Collège des bourgmestre et échevins',
     'college-ech': 'Collège échevinal'
   };
-  const commStr = commune ? ` de ${commune}` : '';
+  const commStr = commune ? ` de ${ucNomPropre(commune)}` : '';
   if (!d) return '[Date manquante]';
   let ref;
   if (organe === 'aucun') {
@@ -1693,7 +1769,7 @@ function genActeCommunal() {
 function genLoisCoord() {
   const nature = v('coord-nature');
   const d = getDate('coord');
-  const title = v('coord-title');
+  const title = tx('coord-title');
   const pub = getDate('coord-pub');
   const labels = { 'lois':'Lois','decrets':'Décrets','ordonnances':'Ordonnances' };
   const nat = labels[nature] || nature;
@@ -1706,8 +1782,8 @@ function genLoisCoord() {
 
 function genAccordCoop() {
   const d = getDate('acc');
-  const parties = v('acc-parties');
-  const title = v('acc-title');
+  const parties = tx('acc-parties');
+  const title = tx('acc-title');
   const assType = v('acc-ass-type');
   const dAss = getDate('acc-ass');
   const pub = getDate('acc-pub');
@@ -1731,9 +1807,9 @@ function genAccordCoop() {
 function genCCT() {
   const type = v('cct-type');
   const num = v('cct-num');
-  const enceinte = v('cct-enceinte');
+  const enceinte = tx('cct-enceinte');
   const d = getDate('cct');
-  const title = v('cct-title');
+  const title = tx('cct-title');
   const arChecked = document.getElementById('cct-ar').checked;
   const arts = normArts(v('cct-arts'));
 
@@ -1758,9 +1834,9 @@ function genCCT() {
 
 function genCircWeb() {
   const num = v('circw-num');
-  const autorite = v('circw-autorite');
+  const autorite = tx('circw-autorite');
   const d = getDate('circw');
-  const title = v('circw-title');
+  const title = tx('circw-title');
   const pointType = v('circw-point-type');
   const pointNum = v('circw-point-num');
   const url = v('circw-url');
@@ -1786,9 +1862,9 @@ function genDocParlFed() {
   const ass = v('dpf-assemblee');
   const sess = v('dpf-session');
   const num = v('dpf-num');
-  const nature = v('dpf-nature');
-  const intitule = v('dpf-intitule');
-  const partie = correctProperNouns(v('dpf-partie'));
+  const nature = tx('dpf-nature');
+  const intitule = tx('dpf-intitule');
+  const partie = correctProperNouns(tx('dpf-partie'));
   const pages = v('dpf-pages');
   // Format: [nature] [intitulé], [partie], Doc., [ass], [session], n°[num], p. [pages]
   let ref = '';
@@ -1807,9 +1883,9 @@ function genDocParlFed() {
 }
 
 function genDebatsFed() {
-  const nature = v('dbf-nature');
-  const intitule = v('dbf-intitule');
-  const partie = correctProperNouns(v('dbf-partie'));
+  const nature = tx('dbf-nature');
+  const intitule = tx('dbf-intitule');
+  const partie = correctProperNouns(tx('dbf-partie'));
   const recueil = v('dbf-recueil') || 'Ann. parl.';
   const ass = v('dbf-assemblee');
   const sess = v('dbf-session');
@@ -1847,7 +1923,7 @@ function articleDAuteur(auteur) {
 function genQRQuestion() {
   const nature = v('qrq-nature');
   const num = v('qrq-num');
-  const auteur = v('qrq-auteur');
+  const auteur = tx('qrq-auteur');
   const dateQ = getDate('qrq-date');
   const recueil = getQRRecueil('qrq');
   const ass = v('qrq-assemblee');
@@ -1874,7 +1950,7 @@ function genQRReponse() {
   const dateRep = getDate('qrr-date');
   const nature = v('qrr-nature');
   const num = v('qrr-num');
-  const auteur = v('qrr-auteur');
+  const auteur = tx('qrr-auteur');
   const recueil = getQRRecueil('qrr');
   const ass = v('qrr-assemblee');
   const sess = v('qrr-session');
@@ -1898,7 +1974,7 @@ function genQRReponse() {
 }
 
 function genRapportRoi() {
-  const intitule = v('rr-intitule');
+  const intitule = tx('rr-intitule');
   const d = getDate('rr');
   const pub = getDate('rr-pub');
   const page = v('rr-page');
@@ -1922,9 +1998,9 @@ function genDocParlFE() {
   const parl = v('dpfe-parl');
   const sess = v('dpfe-session');
   const num = v('dpfe-num');
-  const nature = v('dpfe-nature');
-  const intitule = v('dpfe-intitule');
-  const partie = correctProperNouns(v('dpfe-partie'));
+  const nature = tx('dpfe-nature');
+  const intitule = tx('dpfe-intitule');
+  const partie = correctProperNouns(tx('dpfe-partie'));
   const pages = v('dpfe-pages');
   // Format: [nature] [intitulé], [partie], Doc., [parl], [session], n°[num], p. [pages]
   let ref = '';
@@ -1943,9 +2019,9 @@ function genDocParlFE() {
 }
 
 function genDebatsFE() {
-  const nature = v('dbfe-nature');
-  const intitule = v('dbfe-intitule');
-  const partie = correctProperNouns(v('dbfe-partie'));
+  const nature = tx('dbfe-nature');
+  const intitule = tx('dbfe-intitule');
+  const partie = correctProperNouns(tx('dbfe-partie'));
   const recueil = v('dbfe-recueil') || 'Ann. parl.';
   const parl = v('dbfe-parl');
   const sess = v('dbfe-session');
@@ -1976,7 +2052,7 @@ function genRapportGouv() {
   };
   const gouv = v('rg-gouv');
   const acte = v('rg-acte');
-  const intitule = v('rg-intitule');
+  const intitule = tx('rg-intitule');
   const d = getDate('rg');
   const pub = getDate('rg-pub');
   const page = v('rg-page');
@@ -2033,7 +2109,7 @@ function generateReference() {
       default: result = '[Veuillez sélectionner un type de travail préparatoire]';
     }
   }
-  document.getElementById('result-area').innerHTML = result;
+  document.getElementById('result-area').innerHTML = ucPremierMot(result);
   document.getElementById('result-card').classList.remove('hidden');
   document.getElementById('result-card').scrollIntoView({ behavior:'smooth', block:'nearest' });
 }
