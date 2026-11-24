@@ -1418,6 +1418,14 @@ function abregerSubdiv(txt) {
   // « tirets » / « phrases » au pluriel -> singulier
   t = t.replace(/\btirets\b/gi, 'tiret');
   t = t.replace(/\bphrases\b/gi, 'phrase');
+  // Forme postposee : « tiret 2 » -> « 2e tiret », « phrase 2 » -> « 2e phrase »,
+  // « tiret 1 » -> « 1er tiret ». La forme deja correcte (« 3e tiret ») n'est pas touchee.
+  t = t.replace(/\b(tiret|phrase)\s*\.?\s*(\d+)(?![\w\u00b0])/gi, function (m, mot, n) {
+    var rang = (n === '1') ? '1er' : n + 'e';
+    return ' ' + rang + ' ' + mot.toLowerCase() + ' ';
+  });
+  // Ordinaux saisis en toutes lettres abregees : 2eme / 2ème -> 2e
+  t = t.replace(/\b(\d+)\s*(?:\u00e8me|eme)\b/gi, '$1e');
   return t.replace(/\s{2,}/g, ' ').trim();
 }
 
@@ -1448,10 +1456,12 @@ function virgulerSubdiv(txt) {
     if (mots[i + 1] === '\u00b0' && /^\d+$/.test(m) && cur.length) pousser();
     if (m === '\u00b0') { cur.push(m); pousser(); continue; }
     var estMarqueur = MARQ.test(m);
-    var estRang   = /^\d+e$/i.test(m) && /^(tiret|phrase)s?$/i.test(mots[i + 1] || '');
+    var estRang   = /^\d+(?:e|er|\u00e8me|eme)$/i.test(m) && /^(tiret|phrase)s?$/i.test(mots[i + 1] || '');
     var estLettre = /^[a-z]$/i.test(m) && mots[i + 1] === ')';
     var estRomain = /^[IVXLCDM]+\.?$/.test(m) && cur.length > 0;
-    if ((estMarqueur || estRang || estLettre || estRomain) && cur.length) pousser();
+    // une lettre « a) » qui suit immediatement « litt. » ou « n\u00b0 » appartient a ce marqueur
+    var colleAuMarqueur = estLettre && cur.length && MARQ.test(cur[cur.length - 1]);
+    if ((estMarqueur || estRang || estLettre || estRomain) && cur.length && !colleAuMarqueur) pousser();
     cur.push(m);
   }
   pousser();
